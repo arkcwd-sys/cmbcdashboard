@@ -1,0 +1,3735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crow Mountain Baptist Church CRM</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #printArea, #printArea * {
+        visibility: visible !important;
+      }
+      #printArea {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col antialiased">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Left: Branding -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-900/30">
+            <i data-lucide="church" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-bold text-base sm:text-lg tracking-tight leading-tight">Crow Mountain Baptist Church</h1>
+              <span class="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">CRM</span>
+            </div>
+            <p class="text-xs text-slate-400">
+              Russellville / Pottsville, AR • <span id="headerGreetingTag" class="text-emerald-400 font-medium">Welcome Dawn</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <div id="syncBadge" class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="syncText">Data Active</span>
+          </div>
+
+          <button onclick="openLogAttendanceModal()" class="flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all hover:shadow active:scale-95">
+            <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+            <span>Log Attendance</span>
+          </button>
+
+          <button onclick="openRecordGivingModal()" class="flex items-center gap-1.5 px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all hover:shadow active:scale-95">
+            <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+            <span>Record Giving</span>
+          </button>
+
+          <button onclick="openAddMemberModal()" class="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all hover:shadow active:scale-95">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            <span>Add Member</span>
+          </button>
+
+          <button onclick="openPrintDirectoryModal()" title="Print Church Directory" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 text-xs transition-colors">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="bg-slate-800/80 border-t border-slate-700/60 backdrop-blur-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="flex space-x-1 sm:space-x-3 overflow-x-auto py-1 custom-scroll text-xs sm:text-sm font-medium">
+          <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-3 py-2 rounded-lg text-white bg-slate-700/70 flex items-center gap-2 whitespace-nowrap transition-colors">
+            <i data-lucide="layout-dashboard" class="w-4 h-4 text-emerald-400"></i>
+            <span>Dashboard Overview</span>
+          </button>
+
+          <button onclick="switchTab('finances')" id="tab-finances" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/40 flex items-center gap-2 whitespace-nowrap transition-colors">
+            <i data-lucide="badge-dollar-sign" class="w-4 h-4 text-amber-400"></i>
+            <span>Giving & Finances</span>
+          </button>
+
+          <button onclick="switchTab('directory')" id="tab-directory" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/40 flex items-center gap-2 whitespace-nowrap transition-colors">
+            <i data-lucide="users" class="w-4 h-4 text-sky-400"></i>
+            <span>Member Directory</span>
+            <span id="memberCountBadge" class="bg-slate-700 text-slate-300 text-[11px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+          </button>
+
+          <button onclick="switchTab('households')" id="tab-households" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/40 flex items-center gap-2 whitespace-nowrap transition-colors">
+            <i data-lucide="home" class="w-4 h-4 text-amber-400"></i>
+            <span>Households</span>
+          </button>
+
+          <button onclick="switchTab('pastoral')" id="tab-pastoral" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/40 flex items-center gap-2 whitespace-nowrap transition-colors">
+            <i data-lucide="heart-handshake" class="w-4 h-4 text-rose-400"></i>
+            <span>Pastoral Care & Prayer</span>
+          </button>
+
+          <button onclick="switchTab('broadcast')" id="tab-broadcast" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/40 flex items-center gap-2 whitespace-nowrap transition-colors">
+            <i data-lucide="mail" class="w-4 h-4 text-purple-400"></i>
+            <span>Broadcast & Lists</span>
+          </button>
+
+          <button onclick="switchTab('sync')" id="tab-sync" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/40 flex items-center gap-2 whitespace-nowrap transition-colors">
+            <i data-lucide="sheet" class="w-4 h-4 text-emerald-400"></i>
+            <span>Google Sheets & CSV</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ==================== 1. TAB: DASHBOARD OVERVIEW ==================== -->
+    <section id="pane-dashboard" class="space-y-6">
+      
+      <!-- Secretary Greeting Banner -->
+      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
+            <i id="greetingIcon" data-lucide="sun" class="w-6 h-6 text-amber-400"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <h2 id="secretaryGreeting" class="text-base sm:text-lg font-bold tracking-tight">Good morning, Dawn!</h2>
+              <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full">Church Secretary</span>
+            </div>
+            <p id="greetingSubtext" class="text-xs text-slate-300 mt-0.5">Welcome to the Crow Mountain Baptist Church portal. Have a blessed day serving our church family.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 self-start sm:self-auto text-xs text-slate-300 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-xl shadow-inner">
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span id="currentDateTimeDisplay">--</span>
+        </div>
+      </div>
+
+      <!-- Top Metrics Row -->
+      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Members</p>
+            <h3 id="statActive" class="text-2xl sm:text-3xl font-bold text-slate-800 mt-1">--</h3>
+            <p class="text-[11px] text-emerald-600 mt-1 font-medium flex items-center gap-1">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+              Resident & Regular
+            </p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Households</p>
+            <h3 id="statHouseholds" class="text-2xl sm:text-3xl font-bold text-slate-800 mt-1">--</h3>
+            <p class="text-[11px] text-slate-500 mt-1 font-medium">Families & Units</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+            <i data-lucide="home" class="w-6 h-6"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Homebound / Care</p>
+            <h3 id="statHomebound" class="text-2xl sm:text-3xl font-bold text-amber-600 mt-1">--</h3>
+            <p class="text-[11px] text-amber-700 mt-1 font-medium">Shut-in & Nursing</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <i data-lucide="heart" class="w-6 h-6"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Prayers</p>
+            <h3 id="statPrayers" class="text-2xl sm:text-3xl font-bold text-rose-600 mt-1">--</h3>
+            <p class="text-[11px] text-rose-700 mt-1 font-medium">Current Requests</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+            <i data-lucide="message-square" class="w-6 h-6"></i>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= ATTENDANCE ANALYTICS SECTION ================= -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <i data-lucide="trending-up" class="w-4 h-4"></i>
+              </span>
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">Service & Bible Study Attendance Tracking</h3>
+                <p class="text-xs text-slate-400">Weekly totals for Sunday School, Main Service, Small Groups, Youth, and Wed. Bible Study</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="exportAttendanceCsv()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors" title="Export attendance records to CSV">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>Export Attendance CSV</span>
+            </button>
+            <button onclick="openLogAttendanceModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Record Sunday / Wed Count</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Attendance Quick-Metric Badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="latestAttendanceSummary">
+          <!-- Rendered via JS -->
+        </div>
+
+        <!-- Attendance Comparison Graph -->
+        <div class="pt-2">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-indigo-600"></i>
+              Attendance Comparison by Date
+            </span>
+            <div class="flex items-center gap-2 text-xs">
+              <button onclick="toggleChartType('line')" id="chartTypeLineBtn" class="px-2.5 py-1 rounded-lg font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">Line Trend</button>
+              <button onclick="toggleChartType('bar')" id="chartTypeBarBtn" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:bg-slate-100">Bar Groups</button>
+            </div>
+          </div>
+          <div class="h-64 sm:h-72 relative">
+            <canvas id="attendanceChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Attendance Log Table (Expandable / Scrollable) -->
+        <div class="pt-3 border-t border-slate-100">
+          <div class="flex items-center justify-between mb-2.5">
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Historical Attendance Log</h4>
+            <span id="attendanceTotalCount" class="text-xs text-slate-400">0 records</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-100">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="py-2.5 px-3">Date</th>
+                  <th class="py-2.5 px-3 text-emerald-700 font-bold">Main Service</th>
+                  <th class="py-2.5 px-3">Sunday School</th>
+                  <th class="py-2.5 px-3">Small Groups</th>
+                  <th class="py-2.5 px-3">Youth Group</th>
+                  <th class="py-2.5 px-3">Wed Bible Study</th>
+                  <th class="py-2.5 px-3">Weekly Total</th>
+                  <th class="py-2.5 px-3">Notes</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody" class="divide-y divide-slate-100">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Middle Grid: Charts & Ministries -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Status Breakdown Chart -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-600"></i>
+              Membership Statuses
+            </h3>
+            <span class="text-xs text-slate-400">Total Church Roster</span>
+          </div>
+          <div class="h-56 relative flex items-center justify-center">
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Sunday School Breakdown Chart -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-sky-600"></i>
+              Sunday School Classes
+            </h3>
+            <span class="text-xs text-slate-400">Bible Study Groups</span>
+          </div>
+          <div class="h-56 relative flex items-center justify-center">
+            <canvas id="classChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Ministry & Volunteer Teams Overview -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-purple-600"></i>
+                Ministry Teams & Volunteers
+              </h3>
+              <span class="text-xs text-purple-600 font-semibold">Active Teams</span>
+            </div>
+            
+            <div class="space-y-3" id="ministryOverviewList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <span>Sunday Morning Volunteers</span>
+            <button onclick="switchTab('directory')" class="text-emerald-600 font-semibold hover:underline">View Roster</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Grid: Recent Pastoral Activity & Upcoming Birthdays -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Recent Pastoral Care Feed -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="clipboard-list" class="w-4 h-4 text-emerald-600"></i>
+              Recent Pastoral Care Contacts
+            </h3>
+            <button onclick="switchTab('pastoral')" class="text-xs text-emerald-600 hover:text-emerald-700 font-semibold">Log Care</button>
+          </div>
+          <div id="dashboardRecentCare" class="space-y-3">
+            <!-- Dynamic care log items -->
+          </div>
+        </div>
+
+        <!-- Upcoming Birthdays & Milestones -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="cake" class="w-4 h-4 text-amber-500"></i>
+              Upcoming Celebrations & Anniversaries
+            </h3>
+            <span class="text-xs text-slate-400">Next 45 Days</span>
+          </div>
+          <div id="dashboardCelebrations" class="space-y-2.5">
+            <!-- Dynamic celebrations -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== 1B. TAB: GIVING & FINANCES ==================== -->
+    <section id="pane-finances" class="hidden space-y-6">
+      
+      <!-- Top Overview Bar with View Horizon & Quick Action -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+              <i data-lucide="badge-dollar-sign" class="w-5 h-5"></i>
+            </span>
+            Church Giving & Financial Analytics
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">Track General Tithes, Sunday School, Online Giving, and custom ministry offerings with Year-over-Year comparisons.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Horizon Toggle -->
+          <div class="bg-slate-100 p-1 rounded-xl flex items-center text-xs font-semibold">
+            <button onclick="setFinanceHorizon('week')" id="horizonBtnWeek" class="px-3 py-1.5 rounded-lg bg-white shadow-sm text-slate-800">Weekly</button>
+            <button onclick="setFinanceHorizon('month')" id="horizonBtnMonth" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">Monthly</button>
+            <button onclick="setFinanceHorizon('year')" id="horizonBtnYear" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">Yearly</button>
+          </div>
+
+          <button onclick="exportGivingCsv()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors" title="Export giving ledger to CSV">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Export CSV</span>
+          </button>
+
+          <button onclick="openRecordGivingModal()" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm transition-all hover:shadow active:scale-95">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Record Tithes</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Financial Metric Cards & Year-Over-Year (YoY) Banner -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Latest Sunday Offering</p>
+          <h3 id="statFinanceLatestTotal" class="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">$0.00</h3>
+          <p id="statFinanceLatestDate" class="text-[11px] text-slate-400 mt-1">--</p>
+        </div>
+
+        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Year-To-Date (YTD) 2026</p>
+          <h3 id="statFinanceYtdTotal" class="text-2xl sm:text-3xl font-bold text-emerald-600 mt-1">$0.00</h3>
+          <p class="text-[11px] text-emerald-700 mt-1 font-medium flex items-center gap-1">
+            <i data-lucide="check-circle" class="w-3 h-3"></i>
+            All funds combined
+          </p>
+        </div>
+
+        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Online & Digital Share</p>
+          <h3 id="statFinanceOnlineShare" class="text-2xl sm:text-3xl font-bold text-sky-600 mt-1">0%</h3>
+          <p id="statFinanceOnlineAmount" class="text-[11px] text-slate-400 mt-1">$0.00 online total</p>
+        </div>
+
+        <!-- YoY Comparison Card -->
+        <div class="bg-gradient-to-br from-slate-900 to-amber-950 text-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Year-Over-Year Trend</span>
+              <span id="yoyBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">--</span>
+            </div>
+            <h4 id="yoyTitle" class="text-sm font-semibold text-slate-200 mt-1">Same Week vs 2025</h4>
+            <div class="flex items-baseline gap-2 mt-1">
+              <span id="yoyPercent" class="text-xl sm:text-2xl font-bold text-white">--</span>
+              <span id="yoyDifference" class="text-xs text-slate-300">--</span>
+            </div>
+          </div>
+          <p id="yoyDetails" class="text-[10px] text-slate-400 mt-2">Comparing recent week with same calendar week last year.</p>
+        </div>
+
+      </div>
+
+      <!-- Financial Charts: Trend by Selected Horizon & Fund Breakdown -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Main Trend Chart (2 Cols) -->
+        <div class="lg:col-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+            <div>
+              <h3 id="financeChartTitle" class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-amber-600"></i>
+                Weekly Contribution Trends
+              </h3>
+              <p id="financeChartSubtitle" class="text-xs text-slate-400">Stacked offering breakdown by date and category</p>
+            </div>
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="text-[11px] text-slate-400 font-medium">Chart Mode:</span>
+              <button onclick="toggleFinanceChartType('bar')" id="btnFinChartBar" class="px-2.5 py-1 rounded-lg font-semibold bg-amber-50 text-amber-800 border border-amber-200">Bar</button>
+              <button onclick="toggleFinanceChartType('line')" id="btnFinChartLine" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:bg-slate-100">Line</button>
+            </div>
+          </div>
+
+          <div class="h-64 sm:h-72 relative">
+            <canvas id="financeTrendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Fund Allocation Doughnut (1 Col) -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100 mb-3">
+              <h3 class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-600"></i>
+                Fund Distribution
+              </h3>
+              <span class="text-xs text-slate-400">YTD 2026</span>
+            </div>
+            <div class="h-56 relative flex items-center justify-center">
+              <canvas id="financeDistributionChart"></canvas>
+            </div>
+          </div>
+          <div id="financeFundLegend" class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Financial Giving Ledger Table -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+          <div>
+            <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+              <i data-lucide="receipt" class="w-4 h-4 text-slate-700"></i>
+              Contribution Records & Weekly Offering Log
+            </h3>
+            <p class="text-xs text-slate-400">Detailed historical breakdown for Secretary and Finance Committee records</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="givingRecordCount" class="text-xs text-slate-500 font-medium">0 records</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-200">
+          <table class="w-full text-left text-xs text-slate-600">
+            <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 uppercase text-[11px] tracking-wider">
+              <tr>
+                <th class="py-3 px-3">Service Date</th>
+                <th class="py-3 px-3 text-emerald-800 font-bold">General Tithes</th>
+                <th class="py-3 px-3 text-sky-800 font-bold">Sunday School</th>
+                <th class="py-3 px-3 text-indigo-800 font-bold">Online Giving</th>
+                <th class="py-3 px-3">Building Fund</th>
+                <th class="py-3 px-3">Custom Offerings</th>
+                <th class="py-3 px-3 text-amber-900 font-bold">Total Deposit</th>
+                <th class="py-3 px-3">Notes / Designation</th>
+                <th class="py-3 px-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="givingTableBody" class="divide-y divide-slate-100 font-normal">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== 2. TAB: MEMBER DIRECTORY ==================== -->
+    <section id="pane-directory" class="hidden space-y-4">
+      
+      <!-- Filters and Search Toolbar -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+        
+        <!-- Search Input -->
+        <div class="relative flex-1">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
+          <input type="text" id="directorySearch" oninput="applyFilters()" placeholder="Search members by name, phone, address, or email..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800">
+        </div>
+
+        <div class="flex flex-wrap sm:flex-nowrap gap-2 items-center">
+          
+          <!-- Status Filter -->
+          <div class="w-full sm:w-auto">
+            <select id="filterStatus" onchange="applyFilters()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-700 font-medium">
+              <option value="ALL">All Statuses</option>
+              <option value="Active">Active Member</option>
+              <option value="Homebound">Homebound / Shut-In</option>
+              <option value="Visitor">Visitor / Guest</option>
+              <option value="Moved">Moved / Transferred Letter</option>
+              <option value="Deceased">Deceased (In Memoriam)</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Youth">Youth / Student</option>
+            </select>
+          </div>
+
+          <!-- Class Filter -->
+          <div class="w-full sm:w-auto">
+            <select id="filterClass" onchange="applyFilters()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-700 font-medium">
+              <option value="ALL">All Sunday Schools</option>
+              <option value="Senior Adults">Senior Adults (Joy Class)</option>
+              <option value="Adults">Adults / Berean</option>
+              <option value="Young Adults">Young Adults / Families</option>
+              <option value="Youth">Youth / Students</option>
+              <option value="Children">Children's Ministry</option>
+            </select>
+          </div>
+
+          <!-- Export CSV Button -->
+          <button onclick="triggerCsvExport()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Export</span>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Member Table Card -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm text-slate-600">
+            <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider text-[11px] font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Member Name</th>
+                <th class="py-3 px-4">Status & Milestones</th>
+                <th class="py-3 px-4">Sunday School</th>
+                <th class="py-3 px-4">Contact Info</th>
+                <th class="py-3 px-4">Address</th>
+                <th class="py-3 px-4">Ministry Involvement</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="memberTableBody" class="divide-y divide-slate-100 font-normal">
+              <!-- Generated via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="noResults" class="hidden p-8 text-center text-slate-400">
+          <i data-lucide="user-x" class="w-10 h-10 mx-auto text-slate-300 mb-2"></i>
+          <p class="font-medium text-slate-600">No member records match your query.</p>
+          <p class="text-xs text-slate-400 mt-1">Try resetting the status or class filter.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== 3. TAB: HOUSEHOLDS ==================== -->
+    <section id="pane-households" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800">Family Households & Living Units</h2>
+          <p class="text-xs text-slate-500">Grouped by household family name for family mailings and visitation.</p>
+        </div>
+        <div class="text-xs text-slate-500 bg-white px-3 py-1.5 rounded-xl border border-slate-200">
+          Total Families: <span id="householdTotalBadge" class="font-bold text-slate-800">0</span>
+        </div>
+      </div>
+
+      <div id="householdsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Generated via JS -->
+      </div>
+    </section>
+
+    <!-- ==================== 4. TAB: PASTORAL CARE & PRAYER ==================== -->
+    <section id="pane-pastoral" class="hidden space-y-6">
+      
+      <!-- Top Grid: Active Prayer List & Log Pastoral Contact -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Active Prayer Requests with Conversational Flow (2 cols) -->
+        <div class="lg:col-span-2 space-y-4">
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+            
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                  <i data-lucide="heart" class="w-5 h-5 text-rose-500"></i>
+                  Active Prayer & Concern Board
+                </h3>
+                <p class="text-xs text-slate-500">Ongoing health, bereavement, surgery, and spiritual needs.</p>
+              </div>
+              
+              <button onclick="openAddPrayerModal()" class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Add Request</span>
+              </button>
+            </div>
+
+            <!-- List of Prayer Requests with Embedded Conversation Streams -->
+            <div id="prayerRequestsList" class="space-y-4">
+              <!-- Rendered via JS -->
+            </div>
+
+          </div>
+
+          <!-- Homebound & Care Visitation List -->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                  <i data-lucide="home" class="w-5 h-5 text-amber-500"></i>
+                  Homebound & Nursing Home Visitation List
+                </h3>
+                <p class="text-xs text-slate-500">Members unable to attend in-person services regularly.</p>
+              </div>
+              <span class="text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">Care Ministry</span>
+            </div>
+
+            <div id="homeboundList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Log New Pastoral Care Contact Form (1 col) -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 h-fit">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <i data-lucide="phone-call" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">Log Pastoral Contact</h3>
+              <p class="text-[11px] text-slate-400">Record a hospital visit, phone call, or consultation</p>
+            </div>
+          </div>
+
+          <form id="careContactForm" onsubmit="handleSaveCareLog(event)" class="space-y-3 text-xs sm:text-sm">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Member</label>
+              <select id="careMemberSelect" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+                <option value="">-- Choose Member --</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Interaction Type</label>
+              <select id="careType" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+                <option value="Home Visit">Home Visit</option>
+                <option value="Hospital Visit">Hospital Visit</option>
+                <option value="Phone Call">Phone Call / Check-in</option>
+                <option value="Counseling">Pastoral Counseling</option>
+                <option value="Nursing Center">Nursing Center Visit</option>
+                <option value="Bereavement">Bereavement Support</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Staff / Leader Involved</label>
+              <input type="text" id="careStaff" placeholder="e.g. Pastor, Ministry Leader" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Confidential Notes</label>
+              <textarea id="careNotes" rows="3" placeholder="Details of the visit, needs, prayer points..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 resize-none"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Save Pastoral Record</span>
+            </button>
+          </form>
+
+          <div class="mt-5 pt-4 border-t border-slate-100">
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pastoral Log History</h4>
+            <div id="careHistoryList" class="space-y-2 max-h-64 overflow-y-auto custom-scroll pr-1">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== 5. TAB: BROADCAST & LISTS ==================== -->
+    <section id="pane-broadcast" class="hidden space-y-5">
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-lg font-bold text-slate-800">Email & Communication Broadcast Lists</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Quickly copy comma-separated recipient lists for church bulletins, announcements, and prayer chains.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+          
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-slate-800 text-sm">All Active Members Email List</h4>
+                <span id="activeEmailCount" class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold">0 emails</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">General church updates, weather alerts, and newsletters.</p>
+            </div>
+            <button onclick="copyList('activeEmail')" class="mt-4 w-full py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Copy Active Emails</span>
+            </button>
+          </div>
+
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-slate-800 text-sm">Prayer Chain Text Broadcast List</h4>
+                <span id="prayerPhoneCount" class="text-xs bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full font-semibold">0 phones</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Phone numbers formatted for SMS prayer updates.</p>
+            </div>
+            <button onclick="copyList('prayerPhone')" class="mt-4 w-full py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Copy Phone Numbers</span>
+            </button>
+          </div>
+
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-slate-800 text-sm">Sunday School Teachers & Workers</h4>
+                <span class="text-xs bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full font-semibold">Ministry</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Sunday School curriculum reminders and leadership notices.</p>
+            </div>
+            <button onclick="copyList('ssTeachers')" class="mt-4 w-full py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Copy SS Leaders List</span>
+            </button>
+          </div>
+
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-slate-800 text-sm">Printable Church Directory Sheet</h4>
+                <span class="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-semibold">Format</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Generates clean physical layout for church binder or bulletin insert.</p>
+            </div>
+            <button onclick="openPrintDirectoryModal()" class="mt-4 w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+              <span>Open Print Layout</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 6. TAB: GOOGLE SHEETS & CSV SYNC ==================== -->
+    <section id="pane-sync" class="hidden space-y-6">
+      
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800">Google Sheets Live Sync & CSV Importer</h2>
+          <p class="text-xs text-slate-500 mt-1">Connect directly to your Crow Mountain Baptist Church Google Sheet or upload an updated export file.</p>
+        </div>
+
+        <!-- Google Sheet URL Sync -->
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+          <label class="block font-semibold text-slate-700 text-xs sm:text-sm">
+            Published Google Sheets CSV URL
+          </label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="url" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?output=csv" class="flex-1 p-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500">
+            <button onclick="syncGoogleSheet()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm transition-colors">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              <span>Fetch & Sync</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400">
+            Tip: In Google Sheets, go to <strong>File &gt; Share &gt; Publish to web</strong>, choose <strong>Comma-separated values (.csv)</strong>, and paste the generated URL here.
+          </p>
+        </div>
+
+        <!-- Direct CSV Drag and Drop / File Picker -->
+        <div class="p-6 border-2 border-dashed border-slate-300 rounded-2xl text-center bg-slate-50 hover:bg-emerald-50/50 transition-colors cursor-pointer" onclick="document.getElementById('csvFileInput').click()">
+          <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCsvFile(event)">
+          <i data-lucide="file-up" class="w-10 h-10 text-slate-400 mx-auto mb-2"></i>
+          <p class="text-sm font-semibold text-slate-700">Click to upload or drag & drop CSV file</p>
+          <p class="text-xs text-slate-400 mt-1">Supports your Crow Mountain Baptist Church Members 2026-09-29.csv file</p>
+        </div>
+
+        <!-- Supported Fields Information -->
+        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 space-y-1">
+          <p class="font-bold flex items-center gap-1.5">
+            <i data-lucide="info" class="w-4 h-4 text-emerald-700"></i>
+            Supported Fields in Database & CSV
+          </p>
+          <p class="text-emerald-800">
+            First Name, Last Name, Status (Active, Homebound, Visitor, Moved, Deceased, Inactive), Sunday School Class, Phone, Email, Address, Household, Birthday, Ministries, Care Notes, <strong>Date Joined</strong>, <strong>Date Moved</strong>, and <strong>Date Deceased</strong>.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== VIEW MEMBER (READ ONLY) MODAL ==================== -->
+  <div id="viewMemberModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh] my-auto">
+      
+      <!-- Header -->
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div id="viewModalAvatar" class="w-10 h-10 rounded-xl bg-emerald-500 text-slate-900 font-bold flex items-center justify-center text-sm shadow">
+            CM
+          </div>
+          <div>
+            <h3 id="viewModalName" class="font-bold text-base leading-tight">Member Profile</h3>
+            <p id="viewModalHousehold" class="text-xs text-slate-400">Crow Mountain Baptist Church</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeViewMemberModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Body (Read-Only) -->
+      <div class="p-6 overflow-y-auto space-y-4 text-xs sm:text-sm custom-scroll flex-1">
+        <div class="flex flex-wrap items-center justify-between gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+          <div>
+            <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Membership Status</span>
+            <div id="viewStatusBadge" class="mt-1">
+              <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full text-xs font-bold">Active Member</span>
+            </div>
+          </div>
+          <div class="text-right sm:text-left">
+            <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Sunday School Class</span>
+            <span id="viewSundaySchool" class="font-bold text-slate-800 mt-1 block">Adults</span>
+          </div>
+        </div>
+
+        <!-- Milestones Info Box -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+          <span class="font-bold text-slate-700 text-xs flex items-center gap-1.5">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>Church Registry Milestones</span>
+          </span>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+            <div>
+              <span class="text-slate-400 block text-[11px]">Date Joined:</span>
+              <span id="viewJoinedDate" class="font-semibold text-slate-700">—</span>
+            </div>
+            <div id="viewMovedBlock" class="hidden">
+              <span class="text-purple-600 block text-[11px]">Date Moved:</span>
+              <span id="viewMovedDate" class="font-semibold text-purple-900">—</span>
+            </div>
+            <div id="viewDeceasedBlock" class="hidden">
+              <span class="text-rose-600 block text-[11px]">Date Deceased:</span>
+              <span id="viewDeceasedDate" class="font-semibold text-rose-900">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <span class="text-slate-400 block text-[11px] font-semibold uppercase">Phone Number</span>
+            <span id="viewPhone" class="font-bold text-slate-800 mt-0.5 block">—</span>
+          </div>
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <span class="text-slate-400 block text-[11px] font-semibold uppercase">Email Address</span>
+            <span id="viewEmail" class="font-semibold text-slate-800 mt-0.5 block truncate">—</span>
+          </div>
+        </div>
+
+        <!-- Address & Birthday -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-slate-400 block text-[11px] font-semibold uppercase">Physical Address</span>
+                <button type="button" id="btnOpenMaps" class="hidden items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 px-2 py-0.5 rounded-lg transition-colors">
+                  <i data-lucide="navigation" class="w-3 h-3 text-emerald-600"></i>
+                  <span>Open in Maps</span>
+                </button>
+              </div>
+              <span id="viewAddress" class="font-medium text-slate-700 mt-1 block leading-snug">—</span>
+            </div>
+          </div>
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <span class="text-slate-400 block text-[11px] font-semibold uppercase">Birthday (MM/DD)</span>
+            <span id="viewBirthday" class="font-medium text-slate-700 mt-0.5 block">—</span>
+          </div>
+        </div>
+
+        <!-- Ministries -->
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+          <span class="text-slate-400 block text-[11px] font-semibold uppercase">Active Ministries & Service Roles</span>
+          <span id="viewMinistries" class="font-medium text-slate-700 mt-0.5 block">—</span>
+        </div>
+
+        <!-- Pastoral & Care Notes -->
+        <div class="p-3 bg-amber-50/50 border border-amber-200/70 rounded-xl">
+          <span class="text-amber-900 block text-[11px] font-bold uppercase">Pastoral Care & Confidential Notes</span>
+          <p id="viewNotes" class="text-slate-700 mt-1 italic whitespace-pre-wrap leading-relaxed">—</p>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+        <button type="button" onclick="closeViewMemberModal()" class="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-100 text-xs sm:text-sm transition-colors">
+          Close Profile
+        </button>
+        <button type="button" id="btnSwitchToEdit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors">
+          <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+          <span>Edit This Member</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== HIDDEN PRINT CONTAINER ==================== -->
+  <div id="printArea" class="hidden">
+    <div class="p-8 max-w-4xl mx-auto">
+      <div class="text-center pb-6 border-b border-slate-300 mb-6">
+        <h1 class="text-2xl font-bold text-slate-900">Crow Mountain Baptist Church</h1>
+        <p class="text-sm text-slate-600">Russellville / Pottsville, Arkansas • Church Member Directory</p>
+        <p class="text-xs text-slate-400 mt-1">Printed Record • Resident & Active Members</p>
+      </div>
+      <div id="printDirectoryGrid" class="grid grid-cols-2 gap-4 text-xs">
+        <!-- Rendered dynamically for print -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PRINT DIRECTORY PREVIEW MODAL ==================== -->
+  <div id="printModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh] my-auto">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-3.5 sm:py-4 bg-slate-900 text-white flex items-center justify-between shrink-0 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white shrink-0">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm sm:text-base leading-tight">Print Church Directory Sheet</h3>
+            <p class="text-[11px] text-slate-400">Crow Mountain Baptist Church Member Directory Format</p>
+          </div>
+        </div>
+        <button type="button" onclick="closePrintDirectoryModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Toolbar / Filter Bar inside Modal -->
+      <div class="px-5 py-2.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 shrink-0 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="font-semibold text-slate-600">Include:</span>
+          <label class="flex items-center gap-1.5 cursor-pointer text-slate-700">
+            <input type="checkbox" id="printOptAddress" checked onchange="renderPrintModalView()" class="rounded text-emerald-600">
+            <span>Address</span>
+          </label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-slate-700">
+            <input type="checkbox" id="printOptPhone" checked onchange="renderPrintModalView()" class="rounded text-emerald-600">
+            <span>Phone</span>
+          </label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-slate-700">
+            <input type="checkbox" id="printOptEmail" checked onchange="renderPrintModalView()" class="rounded text-emerald-600">
+            <span>Email</span>
+          </label>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span id="printMemberCount" class="text-slate-500 font-medium">0 active records</span>
+        </div>
+      </div>
+
+      <!-- Preview Paper Sheet (Scrollable) -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-100 custom-scroll">
+        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-sm border border-slate-200 max-w-3xl mx-auto space-y-6">
+          
+          <div class="text-center pb-5 border-b border-slate-200">
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Crow Mountain Baptist Church</h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Russellville / Pottsville, Arkansas • Member Directory</p>
+            <p id="printGeneratedDate" class="text-[11px] text-slate-400 mt-1">Generated: Today</p>
+          </div>
+
+          <!-- 2-Column Responsive Directory Sheet -->
+          <div id="printModalDirectoryGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs">
+            <!-- Rendered dynamically -->
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Sticky Footer Actions -->
+      <div class="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+        <button type="button" onclick="copyDirectoryAsText()" class="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-100 text-xs sm:text-sm flex items-center gap-1.5 transition-colors">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy Directory Text</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closePrintDirectoryModal()" class="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-100 text-xs sm:text-sm transition-colors">
+            Close
+          </button>
+          <button type="button" onclick="triggerBrowserPrint()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white rounded-xl font-semibold shadow-sm text-xs sm:text-sm flex items-center gap-2 transition-all">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Print / Save PDF</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MEMBER ADD/EDIT MODAL ==================== -->
+  <div id="memberModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh] my-auto">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div id="modalAvatar" class="w-10 h-10 rounded-xl bg-emerald-500 text-slate-900 font-bold flex items-center justify-center text-sm shadow">
+            CM
+          </div>
+          <div>
+            <h3 id="modalTitle" class="font-bold text-base leading-tight">Member Details</h3>
+            <p id="modalSubtitle" class="text-xs text-slate-400">Crow Mountain Baptist Church Record</p>
+          </div>
+        </div>
+        <button onclick="closeMemberModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <form id="memberForm" onsubmit="handleSaveMember(event)" class="p-6 overflow-y-auto space-y-4 text-xs sm:text-sm custom-scroll flex-1">
+        <input type="hidden" id="editMemberId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">First Name *</label>
+            <input type="text" id="editFirstName" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Last Name *</label>
+            <input type="text" id="editLastName" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Membership Status</label>
+            <select id="editStatus" onchange="handleStatusChangeUI()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium">
+              <option value="Active">Active Member</option>
+              <option value="Homebound">Homebound / Shut-In</option>
+              <option value="Visitor">Visitor / Guest</option>
+              <option value="Moved">Moved / Transferred Letter</option>
+              <option value="Deceased">Deceased (In Memoriam)</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Youth">Youth / Student</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Sunday School Class</label>
+            <select id="editSundaySchool" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
+              <option value="Senior Adults">Senior Adults (Joy Class)</option>
+              <option value="Adults">Adults / Berean</option>
+              <option value="Young Adults">Young Adults / Families</option>
+              <option value="Youth">Youth & Students</option>
+              <option value="Children">Children's Ministry</option>
+              <option value="None">None / General</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Membership History & Milestone Dates Panel -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-700 text-xs flex items-center gap-1.5">
+              <i data-lucide="calendar" class="w-4 h-4 text-emerald-600"></i>
+              Membership Dates & Milestones
+            </span>
+            <span class="text-[11px] text-slate-400">Church Registry Records</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Date Joined</label>
+              <input type="date" id="editJoinDate" class="w-full p-2 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Date Moved / Letter</label>
+              <input type="date" id="editMovedDate" class="w-full p-2 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <div id="deceasedDateContainer" class="p-1 rounded-lg transition-colors">
+              <label class="block text-[11px] font-semibold text-rose-700 mb-1 flex items-center justify-between">
+                <span>Date Deceased</span>
+                <span class="text-[9px] bg-rose-100 text-rose-800 px-1 rounded font-normal">Memorial</span>
+              </label>
+              <input type="date" id="editDeceasedDate" class="w-full p-2 bg-white border border-rose-200 rounded-lg text-xs focus:ring-2 focus:ring-rose-500">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Phone Number</label>
+            <input type="tel" id="editPhone" placeholder="(479) 000-0000" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Email Address</label>
+            <input type="email" id="editEmail" placeholder="member@example.com" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Street Address</label>
+            <input type="text" id="editAddress" placeholder="e.g. 1420 Crow Mountain Rd" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Household / Family</label>
+            <input type="text" id="editHousehold" placeholder="e.g. Adams Family" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Birthday (MM/DD)</label>
+            <input type="text" id="editBirthday" placeholder="e.g. 10/12" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Active Ministries / Roles</label>
+            <input type="text" id="editMinistries" placeholder="e.g. Usher, Choir, Sunday School Teacher" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Pastoral & Care Notes</label>
+          <textarea id="editNotes" rows="2" placeholder="Pastoral care notes, health conditions, or prayer requests..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 resize-none"></textarea>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="pt-4 border-t border-slate-200 flex items-center justify-between shrink-0">
+          <button type="button" id="btnDeleteMember" onclick="handleDeleteCurrentMember()" class="text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span>Remove Record</span>
+          </button>
+
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeMemberModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs sm:text-sm font-semibold transition-colors">
+              Cancel
+            </button>
+            <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-colors">
+              Save Member Record
+            </button>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ==================== PRAYER REQUEST ADD MODAL ==================== -->
+  <div id="prayerModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <h3 class="font-bold text-sm sm:text-base flex items-center gap-2">
+          <i data-lucide="heart" class="w-4 h-4 text-rose-400"></i>
+          New Prayer Request
+        </h3>
+        <button onclick="closeAddPrayerModal()" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="newPrayerForm" onsubmit="handleSaveNewPrayer(event)" class="p-6 space-y-3.5 text-xs sm:text-sm">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Subject / Person In Need *</label>
+          <input type="text" id="newPrayerTitle" required placeholder="e.g. Bro. Jimmy Barton or Youth Revival" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Category</label>
+          <select id="newPrayerCategory" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+            <option value="Health / Surgery">Health / Surgery</option>
+            <option value="Bereavement">Bereavement / Comfort</option>
+            <option value="Salvation / Spiritual">Salvation / Spiritual Growth</option>
+            <option value="Church Ministry">Church Outreach / Ministry</option>
+            <option value="Praise Report">Praise / Answered Prayer</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Details & Prayer Notes *</label>
+          <textarea id="newPrayerText" rows="3" required placeholder="Provide prayer request details and situation..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 resize-none"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeAddPrayerModal()" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-semibold">Post Prayer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== LOG ATTENDANCE MODAL (MOBILE RESPONSIVE) ==================== -->
+  <div id="attendanceModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh] my-auto">
+      
+      <!-- Modal Header (Fixed) -->
+      <div class="px-5 py-3.5 sm:py-4 bg-slate-900 text-white flex items-center justify-between shrink-0 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0">
+            <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 id="attendanceModalTitle" class="font-bold text-sm sm:text-base leading-tight">Record Attendance Numbers</h3>
+            <p class="text-[11px] text-slate-400">Crow Mountain Baptist Church Weekly Attendance</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeLogAttendanceModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Form with Scrollable Content Body and Sticky Actions Footer -->
+      <form id="attendanceForm" onsubmit="handleSaveAttendance(event)" class="flex flex-col flex-1 overflow-hidden">
+        <input type="hidden" id="editAttendanceId">
+
+        <!-- Scrollable Form Body -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3 custom-scroll text-xs sm:text-sm">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Service / Sunday Date *</label>
+            <input type="date" id="attDate" required class="w-full p-2 sm:p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 font-medium">
+            <p class="text-[11px] text-slate-400 mt-0.5">Use Sunday's date for that service week.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 pt-0.5">
+            <div class="p-2.5 sm:p-3 bg-emerald-50/60 rounded-xl border border-emerald-100">
+              <label class="block font-semibold text-emerald-900 mb-1 text-xs">Main Service (Worship) *</label>
+              <input type="number" id="attMainService" min="0" required placeholder="e.g. 78" class="w-full p-2 bg-white border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-900">
+            </div>
+
+            <div class="p-2.5 sm:p-3 bg-sky-50/60 rounded-xl border border-sky-100">
+              <label class="block font-semibold text-sky-900 mb-1 text-xs">Sunday School *</label>
+              <input type="number" id="attSundaySchool" min="0" required placeholder="e.g. 52" class="w-full p-2 bg-white border border-sky-200 rounded-lg focus:ring-2 focus:ring-sky-500 font-bold text-sky-900">
+            </div>
+
+            <div class="p-2.5 sm:p-3 bg-amber-50/60 rounded-xl border border-amber-100">
+              <label class="block font-semibold text-amber-900 mb-1 text-xs">Small Groups</label>
+              <input type="number" id="attSmallGroups" min="0" placeholder="e.g. 34" class="w-full p-2 bg-white border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 font-bold text-amber-900">
+            </div>
+
+            <div class="p-2.5 sm:p-3 bg-purple-50/60 rounded-xl border border-purple-100">
+              <label class="block font-semibold text-purple-900 mb-1 text-xs">Youth Group</label>
+              <input type="number" id="attYouthGroup" min="0" placeholder="e.g. 18" class="w-full p-2 bg-white border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 font-bold text-purple-900">
+            </div>
+
+            <div class="p-2.5 sm:p-3 bg-rose-50/60 rounded-xl border border-rose-100 sm:col-span-2">
+              <label class="block font-semibold text-rose-900 mb-1 text-xs">Wed Evening Bible Study</label>
+              <input type="number" id="attWedBible" min="0" placeholder="e.g. 42" class="w-full p-2 bg-white border border-rose-200 rounded-lg focus:ring-2 focus:ring-rose-500 font-bold text-rose-900">
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Notes / Special Events</label>
+            <input type="text" id="attNotes" placeholder="e.g. Homecoming Sunday, Rainstorm, Guest Speaker" class="w-full p-2 sm:p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <!-- Sticky Modal Footer Actions -->
+        <div class="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+          <button type="button" id="btnDeleteAttendance" onclick="handleDeleteAttendance()" class="hidden text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span>Delete</span>
+          </button>
+
+          <div class="flex items-center gap-2 ml-auto">
+            <button type="button" onclick="closeLogAttendanceModal()" class="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-100 text-xs sm:text-sm transition-colors">
+              Cancel
+            </button>
+            <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white rounded-xl font-semibold shadow-sm text-xs sm:text-sm transition-all">
+              Save Attendance
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== RECORD GIVING / TITHES MODAL ==================== -->
+  <div id="givingModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh] my-auto">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-3.5 sm:py-4 bg-slate-900 text-white flex items-center justify-between shrink-0 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center text-white shrink-0">
+            <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 id="givingModalTitle" class="font-bold text-sm sm:text-base leading-tight">Record Weekly Tithes & Offerings</h3>
+            <p class="text-[11px] text-slate-400">Crow Mountain Baptist Church Financial Entry</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeRecordGivingModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <form id="givingForm" onsubmit="handleSaveGiving(event)" class="flex flex-col flex-1 overflow-hidden">
+        <input type="hidden" id="editGivingId">
+
+        <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 custom-scroll text-xs sm:text-sm">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Service / Deposit Date *</label>
+            <input type="date" id="giveDate" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 font-medium">
+            <p class="text-[11px] text-slate-400 mt-0.5">Usually Sunday service date or bank deposit date.</p>
+          </div>
+
+          <!-- Standard Categories -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div class="p-3 bg-emerald-50/70 rounded-xl border border-emerald-100">
+              <label class="block font-semibold text-emerald-900 mb-1 text-xs">General Tithes & Offerings ($) *</label>
+              <input type="number" step="0.01" min="0" id="giveGeneral" required placeholder="0.00" oninput="updateGivingModalLiveTotal()" class="w-full p-2 bg-white border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-900">
+            </div>
+
+            <div class="p-3 bg-sky-50/70 rounded-xl border border-sky-100">
+              <label class="block font-semibold text-sky-900 mb-1 text-xs">Sunday School Tithes / Offering ($)</label>
+              <input type="number" step="0.01" min="0" id="giveSundaySchool" placeholder="0.00" oninput="updateGivingModalLiveTotal()" class="w-full p-2 bg-white border border-sky-200 rounded-lg focus:ring-2 focus:ring-sky-500 font-bold text-sky-900">
+            </div>
+
+            <div class="p-3 bg-indigo-50/70 rounded-xl border border-indigo-100">
+              <label class="block font-semibold text-indigo-900 mb-1 text-xs">Online / Digital Giving ($)</label>
+              <input type="number" step="0.01" min="0" id="giveOnline" placeholder="0.00" oninput="updateGivingModalLiveTotal()" class="w-full p-2 bg-white border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500 font-bold text-indigo-900">
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <label class="block font-semibold text-slate-800 mb-1 text-xs">Building & Grounds Fund ($)</label>
+              <input type="number" step="0.01" min="0" id="giveBuilding" placeholder="0.00" oninput="updateGivingModalLiveTotal()" class="w-full p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 font-bold text-slate-800">
+            </div>
+          </div>
+
+          <!-- Dynamic Custom Categories Section -->
+          <div class="p-3.5 bg-amber-50/50 border border-amber-200/80 rounded-xl space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600"></i>
+                  Custom / Special Designated Offerings
+                </span>
+                <p class="text-[11px] text-amber-800">Add funds such as VBS, Cemetery, Benevolence, or Lottie Moon</p>
+              </div>
+              <button type="button" onclick="addCustomGivingField()" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 shadow-sm transition-colors">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Add Category</span>
+              </button>
+            </div>
+
+            <div id="customGivingRows" class="space-y-2">
+              <!-- Custom category rows inserted here dynamically -->
+            </div>
+          </div>
+
+          <!-- Notes / Check count / Details -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Notes / Special Designations</label>
+            <input type="text" id="giveNotes" placeholder="e.g. 5th Sunday Benevolence, Revival Love Offering" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500">
+          </div>
+
+          <!-- Live Total Banner -->
+          <div class="p-3 bg-slate-900 text-white rounded-xl flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-300">Total Deposit for Sunday:</span>
+            <span id="giveLiveTotal" class="text-lg font-bold text-emerald-400">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Sticky Footer -->
+        <div class="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+          <button type="button" id="btnDeleteGiving" onclick="handleDeleteGiving()" class="hidden text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span>Delete</span>
+          </button>
+
+          <div class="flex items-center gap-2 ml-auto">
+            <button type="button" onclick="closeRecordGivingModal()" class="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-100 text-xs sm:text-sm transition-colors">
+              Cancel
+            </button>
+            <button type="submit" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 active:scale-95 text-white rounded-xl font-semibold shadow-sm text-xs sm:text-sm transition-all">
+              Save Financial Record
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ==================== COMPLETE SCRIPT LOGIC ==================== -->
+  <script>
+    const DEFAULT_MEMBERS = [
+      { id: "cm-1", firstName: "Billy", lastName: "Adams", status: "Active", sundaySchool: "Adults", phone: "(479) 968-1240", email: "badams479@gmail.com", address: "1420 Crow Mountain Rd, Russellville, AR 72802", household: "Adams Family", birthday: "10/12", ministries: "Usher, Building & Grounds", notes: "Available for maintenance and facility assistance.", joinDate: "2018-04-15", movedDate: "", deceasedDate: "" },
+      { id: "cm-2", firstName: "Martha", lastName: "Adams", status: "Active", sundaySchool: "Adults", phone: "(479) 968-1241", email: "martha.adams@gmail.com", address: "1420 Crow Mountain Rd, Russellville, AR 72802", household: "Adams Family", birthday: "03/24", ministries: "Choir, Hospitality", notes: "Coordinates bereavement meals and potlucks.", joinDate: "2018-04-15", movedDate: "", deceasedDate: "" },
+      { id: "cm-3", firstName: "Jimmy", lastName: "Barton", status: "Homebound", sundaySchool: "Senior Adults", phone: "(479) 967-8812", email: "", address: "310 Skyline Dr, Russellville, AR 72802", household: "Barton Family", birthday: "11/04", ministries: "Prayer Ministry", notes: "Homebound due to knee mobility therapy. Appreciates weekly audio sermons.", joinDate: "1994-06-12", movedDate: "", deceasedDate: "" },
+      { id: "cm-4", firstName: "Ken", lastName: "Ferguson", status: "Active", sundaySchool: "Adults", phone: "(479) 890-4411", email: "kferguson@centurytel.net", address: "405 Mountain View Dr, Pottsville, AR 72858", household: "Ferguson Family", birthday: "05/18", ministries: "Treasurer, Sunday School Teacher", notes: "Finance committee chairperson.", joinDate: "2005-09-18", movedDate: "", deceasedDate: "" },
+      { id: "cm-5", firstName: "Betty", lastName: "Ferguson", status: "Active", sundaySchool: "Adults", phone: "(479) 890-4412", email: "bferguson@centurytel.net", address: "405 Mountain View Dr, Pottsville, AR 72858", household: "Ferguson Family", birthday: "08/02", ministries: "Nursery Coordinator", notes: "Serves 1st and 3rd Sundays in nursery.", joinDate: "2005-09-18", movedDate: "", deceasedDate: "" },
+      { id: "cm-6", firstName: "Harold", lastName: "Hampton", status: "Active", sundaySchool: "Senior Adults", phone: "(479) 968-7731", email: "hhampton@suddenlink.net", address: "812 N Glenwood Ave, Russellville, AR 72801", household: "Hampton Family", birthday: "02/15", ministries: "Choir, Visitation", notes: "Assists with home communion and shut-in visits.", joinDate: "1999-11-07", movedDate: "", deceasedDate: "" },
+      { id: "cm-7", firstName: "Mildred", lastName: "Jenkins", status: "Homebound", sundaySchool: "Senior Adults", phone: "(479) 229-3301", email: "", address: "Dardanelle Nursing & Rehab Rm 114, Dardanelle, AR 72834", household: "Jenkins Family", birthday: "04/30", ministries: "Prayer Partner", notes: "Longtime church member at Dardanelle Nursing. Loves card mailings.", joinDate: "1982-03-21", movedDate: "", deceasedDate: "" },
+      { id: "cm-8", firstName: "David", lastName: "Miller", status: "Active", sundaySchool: "Young Adults", phone: "(479) 264-9022", email: "dmiller.tech@yahoo.com", address: "220 Ridge View Rd, Russellville, AR 72802", household: "Miller Family", birthday: "09/14", ministries: "Sound & Audio Tech, Youth Leader", notes: "Manages Sunday morning sanctuary livestream.", joinDate: "2021-02-14", movedDate: "", deceasedDate: "" },
+      { id: "cm-9", firstName: "Sarah", lastName: "Miller", status: "Active", sundaySchool: "Young Adults", phone: "(479) 264-9023", email: "smiller.teach@yahoo.com", address: "220 Ridge View Rd, Russellville, AR 72802", household: "Miller Family", birthday: "10/05", ministries: "Children's Church Teacher", notes: "Pre-K Bible lesson teacher.", joinDate: "2021-02-14", movedDate: "", deceasedDate: "" },
+      { id: "cm-10", firstName: "Gary", lastName: "Pritchard", status: "Active", sundaySchool: "Adults", phone: "(479) 880-1299", email: "gpritchard44@gmail.com", address: "550 Pleasant Valley Rd, Pottsville, AR 72858", household: "Pritchard Family", birthday: "12/03", ministries: "Usher, Cemetery Committee", notes: "Oversees church cemetery upkeep.", joinDate: "2010-08-22", movedDate: "", deceasedDate: "" },
+      { id: "cm-11", firstName: "Wayne", lastName: "Taylor", status: "Active", sundaySchool: "Senior Adults", phone: "(479) 967-5509", email: "waynetaylor_cm@gmail.com", address: "1980 Crow Mountain Rd, Russellville, AR 72802", household: "Taylor Family", birthday: "07/19", ministries: "Building & Grounds, Choir", notes: "Assists with air conditioning and maintenance.", joinDate: "2001-05-13", movedDate: "", deceasedDate: "" },
+      { id: "cm-12", firstName: "Tella", lastName: "Molata", status: "Active", sundaySchool: "Adults", phone: "(479) 747-1940", email: "tmolata@outlook.com", address: "124 Pine Crest Ln, Pottsville, AR 72858", household: "Molata Family", birthday: "06/11", ministries: "Prayer Ministry", notes: "Recovering from major surgery.", joinDate: "2023-01-08", movedDate: "", deceasedDate: "" },
+      { id: "cm-13", firstName: "Caleb", lastName: "Vance", status: "Visitor", sundaySchool: "Young Adults", phone: "(479) 310-8841", email: "calebvance@gmail.com", address: "602 East 4th St, Russellville, AR 72801", household: "Vance Family", birthday: "11/20", ministries: "None", notes: "Visiting with young family; interested in young adult group.", joinDate: "", movedDate: "", deceasedDate: "" },
+      { id: "cm-14", firstName: "Evelyn", lastName: "Crowe", status: "Deceased", sundaySchool: "Senior Adults", phone: "", email: "", address: "In Memoriam • Pottsville, AR", household: "Crowe Family", birthday: "01/10", ministries: "Joy Sunday School (Former)", notes: "Faithful servant for over 50 years at Crow Mountain Baptist.", joinDate: "1971-08-15", movedDate: "", deceasedDate: "2026-04-12" },
+      { id: "cm-15", firstName: "Richard", lastName: "Simmons", status: "Moved", sundaySchool: "Adults", phone: "(479) 968-3011", email: "rsimmons_ok@gmail.com", address: "Tulsa, Oklahoma", household: "Simmons Family", birthday: "08/17", ministries: "None", notes: "Transferred church letter to First Baptist Tulsa.", joinDate: "2015-10-11", movedDate: "2026-06-01", deceasedDate: "" }
+    ];
+
+    const DEFAULT_ATTENDANCE = [
+      { id: "att-1", date: "2026-09-06", mainService: 74, sundaySchool: 50, smallGroups: 32, youthGroup: 16, wedBible: 38, notes: "Labor Day Weekend" },
+      { id: "att-2", date: "2026-09-13", mainService: 82, sundaySchool: 56, smallGroups: 36, youthGroup: 19, wedBible: 42, notes: "Baptism Service" },
+      { id: "att-3", date: "2026-09-20", mainService: 78, sundaySchool: 54, smallGroups: 34, youthGroup: 18, wedBible: 40, notes: "Guest Gideon speaker" },
+      { id: "att-4", date: "2026-09-27", mainService: 86, sundaySchool: 58, smallGroups: 38, youthGroup: 22, wedBible: 45, notes: "Youth Sunday & Fellowship lunch" }
+    ];
+
+    const DEFAULT_GIVING = [
+      // 2025 Historical Records for Year-over-Year (YoY) comparison
+      { id: "giv-2025-01", date: "2025-09-07", general: 2850.00, sundaySchool: 210.00, online: 650.00, building: 250.00, customCategories: [{ name: "Benevolence", amount: 100 }], notes: "Regular Sunday 2025" },
+      { id: "giv-2025-02", date: "2025-09-14", general: 3100.00, sundaySchool: 235.00, online: 720.00, building: 200.00, customCategories: [], notes: "Regular Sunday 2025" },
+      { id: "giv-2025-03", date: "2025-09-21", general: 2950.00, sundaySchool: 195.00, online: 700.00, building: 300.00, customCategories: [{ name: "Cemetery Fund", amount: 150 }], notes: "Regular Sunday 2025" },
+      { id: "giv-2025-04", date: "2025-09-28", general: 3400.00, sundaySchool: 260.00, online: 800.00, building: 350.00, customCategories: [{ name: "Youth Revival", amount: 200 }], notes: "Fall Kickoff 2025" },
+
+      // 2026 Current Records
+      { id: "giv-2026-01", date: "2026-09-06", general: 3120.00, sundaySchool: 245.00, online: 850.00, building: 350.00, customCategories: [{ name: "Benevolence", amount: 150 }], notes: "Labor Day Weekend" },
+      { id: "giv-2026-02", date: "2026-09-13", general: 3450.00, sundaySchool: 280.00, online: 920.00, building: 400.00, customCategories: [{ name: "Cemetery Fund", amount: 250 }], notes: "Baptism Service Offering" },
+      { id: "giv-2026-03", date: "2026-09-20", general: 3280.00, sundaySchool: 265.00, online: 890.00, building: 300.00, customCategories: [{ name: "Gideons", amount: 200 }], notes: "Gideon Speaker Sunday" },
+      { id: "giv-2026-04", date: "2026-09-27", general: 3750.00, sundaySchool: 310.00, online: 1050.00, building: 450.00, customCategories: [{ name: "Youth Missions", amount: 300 }], notes: "Youth Sunday Offering" },
+      { id: "giv-2026-05", date: "2026-10-04", general: 3620.00, sundaySchool: 295.00, online: 980.00, building: 380.00, customCategories: [{ name: "Benevolence", amount: 100 }], notes: "1st Sunday of October" }
+    ];
+
+    const DEFAULT_PRAYERS = [
+      {
+        id: "pr-1",
+        title: "Tella Molata - Health & Recovery",
+        category: "Health / Surgery",
+        date: "2026-09-25",
+        text: "Please pray for Tella as he undergoes surgery and post-op care. Pray for surgeon skill and peace for the family.",
+        updates: [
+          { author: "Pastor", role: "Pastoral Staff", date: "2026-09-26 14:30", text: "Spoke with family at hospital. Surgery was completed successfully. In recovery room and resting." },
+          { author: "Betty Ferguson", role: "Care Ministry", date: "2026-09-28 09:15", text: "Taking dinner to the family on Thursday. Continued prayers for mobility." }
+        ]
+      },
+      {
+        id: "pr-2",
+        title: "Jimmy Barton - Strength & Knee Mobility",
+        category: "Health / Surgery",
+        date: "2026-09-22",
+        text: "Continuing physical therapy for knee mobility and stamina. Appreciates visits and sermon CDs.",
+        updates: [
+          { author: "Harold Hampton", role: "Care Team", date: "2026-09-25 11:00", text: "Visited Jimmy on Friday. Spirits are high and he enjoyed the recorded sermon." }
+        ]
+      },
+      {
+        id: "pr-3",
+        title: "Fall Harvest Community Outreach",
+        category: "Church Ministry",
+        date: "2026-09-28",
+        text: "Prayers for community outreach event on Crow Mountain for local Pottsville and Russellville families.",
+        updates: [
+          { author: "David Miller", role: "Youth Leader", date: "2026-09-29 18:20", text: "Youth group will be setting up games and handing out flyers this weekend." }
+        ]
+      }
+    ];
+
+    const DEFAULT_CARE_LOGS = [
+      { id: "cl-1", memberName: "Jimmy Barton", type: "Home Visit", date: "2026-09-25", staff: "Harold Hampton", notes: "Delivered Sunday bulletin and had prayer for knee therapy." },
+      { id: "cl-2", memberName: "Mildred Jenkins", type: "Nursing Center", date: "2026-09-20", staff: "Pastor", notes: "Visited Mildred at Dardanelle Nursing Rm 114. Read Psalm 23 and prayed." },
+      { id: "cl-3", memberName: "Tella Molata", type: "Hospital Visit", date: "2026-09-26", staff: "Pastor", notes: "Hospital visit prior to surgery. Offered family prayer in waiting room." }
+    ];
+
+    // Hydrate State from LocalStorage or use defaults
+    let members = [];
+    try {
+      const stored = localStorage.getItem('cmbc_members');
+      members = stored ? JSON.parse(stored) : DEFAULT_MEMBERS;
+      if (!Array.isArray(members) || members.length === 0) members = DEFAULT_MEMBERS;
+    } catch (e) {
+      members = DEFAULT_MEMBERS;
+    }
+
+    let attendanceRecords = [];
+    try {
+      const stored = localStorage.getItem('cmbc_attendance');
+      attendanceRecords = stored ? JSON.parse(stored) : DEFAULT_ATTENDANCE;
+      if (!Array.isArray(attendanceRecords) || attendanceRecords.length === 0) attendanceRecords = DEFAULT_ATTENDANCE;
+    } catch (e) {
+      attendanceRecords = DEFAULT_ATTENDANCE;
+    }
+
+    let givingRecords = [];
+    try {
+      const stored = localStorage.getItem('cmbc_giving');
+      givingRecords = stored ? JSON.parse(stored) : DEFAULT_GIVING;
+      if (!Array.isArray(givingRecords) || givingRecords.length === 0) givingRecords = DEFAULT_GIVING;
+    } catch (e) {
+      givingRecords = DEFAULT_GIVING;
+    }
+
+    let prayerRequests = [];
+    try {
+      const stored = localStorage.getItem('cmbc_prayer_requests');
+      prayerRequests = stored ? JSON.parse(stored) : DEFAULT_PRAYERS;
+      if (!Array.isArray(prayerRequests) || prayerRequests.length === 0) prayerRequests = DEFAULT_PRAYERS;
+    } catch (e) {
+      prayerRequests = DEFAULT_PRAYERS;
+    }
+
+    let careLogs = [];
+    try {
+      const stored = localStorage.getItem('cmbc_care_logs');
+      careLogs = stored ? JSON.parse(stored) : DEFAULT_CARE_LOGS;
+      if (!Array.isArray(careLogs) || careLogs.length === 0) careLogs = DEFAULT_CARE_LOGS;
+    } catch (e) {
+      careLogs = DEFAULT_CARE_LOGS;
+    }
+
+    // Defensive fallback: If for any reason local storage was empty array, populate with defaults
+    if (members.length === 0) {
+      members = [...DEFAULT_MEMBERS];
+      saveMembersToStorage();
+    }
+    if (attendanceRecords.length === 0) {
+      attendanceRecords = [...DEFAULT_ATTENDANCE];
+      saveAttendanceToStorage();
+    }
+    if (givingRecords.length === 0) {
+      givingRecords = [...DEFAULT_GIVING];
+      saveGivingToStorage();
+    }
+    if (prayerRequests.length === 0) {
+      prayerRequests = [...DEFAULT_PRAYERS];
+      savePrayersToStorage();
+    }
+    if (careLogs.length === 0) {
+      careLogs = [...DEFAULT_CARE_LOGS];
+      saveCareLogsToStorage();
+    }
+    function saveAttendanceToStorage() {
+      localStorage.setItem('cmbc_attendance', JSON.stringify(attendanceRecords));
+    }
+    function saveGivingToStorage() {
+      localStorage.setItem('cmbc_giving', JSON.stringify(givingRecords));
+    }
+    function savePrayersToStorage() {
+      localStorage.setItem('cmbc_prayer_requests', JSON.stringify(prayerRequests));
+    }
+    function saveCareLogsToStorage() {
+      localStorage.setItem('cmbc_care_logs', JSON.stringify(careLogs));
+    }
+
+    function updateSyncBadge() {
+      const badge = document.getElementById('syncText');
+      if (badge) {
+        badge.innerText = `${members.length} Members Active`;
+      }
+    }
+
+    function updateGreeting() {
+      const now = new Date();
+      const hour = now.getHours();
+      let timeOfDay = "day";
+      let greeting = "Welcome Dawn";
+      let subtext = "Welcome to the Crow Mountain Baptist Church portal. Have a blessed day serving our church family.";
+      let iconName = "sun";
+
+      if (hour >= 4 && hour < 12) {
+        timeOfDay = "morning";
+        greeting = "Good morning, Dawn!";
+        subtext = "Welcome to the Crow Mountain Baptist Church portal. May God bless your morning ministry!";
+        iconName = "sunrise";
+      } else if (hour >= 12 && hour < 17) {
+        timeOfDay = "afternoon";
+        greeting = "Good afternoon, Dawn!";
+        subtext = "Welcome to the Crow Mountain Baptist Church portal. Hope your afternoon is going smoothly!";
+        iconName = "sun";
+      } else {
+        timeOfDay = "evening";
+        greeting = "Good evening, Dawn!";
+        subtext = "Welcome to the Crow Mountain Baptist Church portal. Thank you for your faithful service today!";
+        iconName = "moon";
+      }
+
+      const greetingEl = document.getElementById('secretaryGreeting');
+      if (greetingEl) greetingEl.innerText = greeting;
+
+      const subtextEl = document.getElementById('greetingSubtext');
+      if (subtextEl) subtextEl.innerText = subtext;
+
+      const headerTag = document.getElementById('headerGreetingTag');
+      if (headerTag) {
+        headerTag.innerText = `Welcome Dawn • ${greeting.replace('!', '')}`;
+      }
+
+      const iconEl = document.getElementById('greetingIcon');
+      if (iconEl) {
+        iconEl.setAttribute('data-lucide', iconName);
+        if (timeOfDay === 'morning') iconEl.className = "w-6 h-6 text-amber-400";
+        else if (timeOfDay === 'afternoon') iconEl.className = "w-6 h-6 text-amber-300";
+        else iconEl.className = "w-6 h-6 text-indigo-300";
+      }
+
+      const dateDisplay = document.getElementById('currentDateTimeDisplay');
+      if (dateDisplay) {
+        const options = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+        dateDisplay.innerText = now.toLocaleDateString('en-US', options);
+      }
+    }
+
+    function switchTab(tabId) {
+      const panes = ['dashboard', 'finances', 'directory', 'households', 'pastoral', 'broadcast', 'sync'];
+      panes.forEach(p => {
+        const pane = document.getElementById(`pane-${p}`);
+        const btn = document.getElementById(`tab-${p}`);
+        if (pane) {
+          if (p === tabId) {
+            pane.classList.remove('hidden');
+          } else {
+            pane.classList.add('hidden');
+          }
+        }
+        if (btn) {
+          if (p === tabId) {
+            btn.className = "tab-btn px-3 py-2 rounded-lg text-white bg-slate-700/70 flex items-center gap-2 whitespace-nowrap transition-colors";
+          } else {
+            btn.className = "tab-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/40 flex items-center gap-2 whitespace-nowrap transition-colors";
+          }
+        }
+      });
+
+      if (tabId === 'dashboard') {
+        renderDashboard();
+      } else if (tabId === 'finances') {
+        renderFinances();
+      } else if (tabId === 'directory') {
+        applyFilters();
+      } else if (tabId === 'households') {
+        renderHouseholds();
+      } else if (tabId === 'pastoral') {
+        renderPastoral();
+      } else if (tabId === 'broadcast') {
+        renderBroadcastCounts();
+      }
+      lucide.createIcons();
+    }
+
+    /* =========================================================================
+       GIVING & FINANCIAL MANAGEMENT LOGIC
+       ========================================================================= */
+
+    function renderFinances() {
+      renderFinanceMetricCards();
+      renderFinanceTrendChart();
+      renderFinanceDistributionChart();
+      renderGivingLedgerTable();
+      lucide.createIcons();
+    }
+
+    function calculateGivingRecordTotal(r) {
+      const gen = Number(r.general) || 0;
+      const ss = Number(r.sundaySchool) || 0;
+      const onl = Number(r.online) || 0;
+      const bld = Number(r.building) || 0;
+      const customSum = (r.customCategories || []).reduce((acc, c) => acc + (Number(c.amount) || 0), 0);
+      return gen + ss + onl + bld + customSum;
+    }
+
+    function formatCurrency(val) {
+      return '$' + (Number(val) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function renderFinanceMetricCards() {
+      // Sort giving records by date
+      const sorted = [...givingRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+      const latest = sorted[sorted.length - 1];
+
+      // Latest Sunday
+      const latestTotal = latest ? calculateGivingRecordTotal(latest) : 0;
+      const elLatestTotal = document.getElementById('statFinanceLatestTotal');
+      const elLatestDate = document.getElementById('statFinanceLatestDate');
+      if (elLatestTotal) elLatestTotal.innerText = formatCurrency(latestTotal);
+      if (elLatestDate) elLatestDate.innerText = latest ? `Recorded for ${latest.date}` : 'No records';
+
+      // Year-to-Date (current year: 2026)
+      const currentYear = latest ? new Date(latest.date).getFullYear() : 2026;
+      const recordsThisYear = sorted.filter(r => new Date(r.date).getFullYear() === currentYear);
+      const ytdTotal = recordsThisYear.reduce((acc, r) => acc + calculateGivingRecordTotal(r), 0);
+      const onlineTotal = recordsThisYear.reduce((acc, r) => acc + (Number(r.online) || 0), 0);
+
+      const elYtd = document.getElementById('statFinanceYtdTotal');
+      if (elYtd) elYtd.innerText = formatCurrency(ytdTotal);
+
+      const elOnlineShare = document.getElementById('statFinanceOnlineShare');
+      const elOnlineAmount = document.getElementById('statFinanceOnlineAmount');
+      if (elOnlineShare) {
+        const sharePct = ytdTotal > 0 ? Math.round((onlineTotal / ytdTotal) * 100) : 0;
+        elOnlineShare.innerText = `${sharePct}%`;
+      }
+      if (elOnlineAmount) {
+        elOnlineAmount.innerText = `${formatCurrency(onlineTotal)} online in ${currentYear}`;
+      }
+
+      // Year-over-Year (YoY) calculation comparing latest week with corresponding week in previous year
+      renderYearOverYear(latest, sorted);
+    }
+
+    function getWeekNumber(d) {
+      const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      const dayNum = date.getUTCDay() || 7;
+      date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
+      return Math.ceil((((date - yearStart) / 86400000) + 1)/7);
+    }
+
+    function renderYearOverYear(latestRecord, allRecords) {
+      const yoyBadge = document.getElementById('yoyBadge');
+      const yoyTitle = document.getElementById('yoyTitle');
+      const yoyPercent = document.getElementById('yoyPercent');
+      const yoyDiff = document.getElementById('yoyDifference');
+      const yoyDetails = document.getElementById('yoyDetails');
+
+      if (!latestRecord) {
+        if (yoyPercent) yoyPercent.innerText = '--';
+        return;
+      }
+
+      const latestDate = new Date(latestRecord.date);
+      const currentTotal = calculateGivingRecordTotal(latestRecord);
+      const currentYear = latestDate.getFullYear();
+      const previousYear = currentYear - 1;
+      const weekNum = getWeekNumber(latestDate);
+
+      // Find record in previous year with matching week number (or closest date ± 7 days)
+      const prevYearRecords = allRecords.filter(r => new Date(r.date).getFullYear() === previousYear);
+      let matchPrev = prevYearRecords.find(r => getWeekNumber(new Date(r.date)) === weekNum);
+
+      if (!matchPrev && prevYearRecords.length > 0) {
+        // Fallback to match by month/day proximity
+        matchPrev = prevYearRecords.reduce((closest, curr) => {
+          const currDist = Math.abs(new Date(curr.date).getMonth() - latestDate.getMonth());
+          const closestDist = Math.abs(new Date(closest.date).getMonth() - latestDate.getMonth());
+          return currDist < closestDist ? curr : closest;
+        }, prevYearRecords[0]);
+      }
+
+      if (matchPrev) {
+        const prevTotal = calculateGivingRecordTotal(matchPrev);
+        const diff = currentTotal - prevTotal;
+        const pct = prevTotal > 0 ? ((diff / prevTotal) * 100).toFixed(1) : 0;
+        const isUp = diff >= 0;
+
+        if (yoyTitle) yoyTitle.innerText = `Week ${weekNum} (${currentYear} vs ${previousYear})`;
+        if (yoyBadge) {
+          yoyBadge.innerText = isUp ? `+${pct}%` : `${pct}%`;
+          yoyBadge.className = isUp 
+            ? "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+            : "text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+        }
+        if (yoyPercent) {
+          yoyPercent.innerText = isUp ? `+${pct}%` : `${pct}%`;
+          yoyPercent.className = `text-xl sm:text-2xl font-bold ${isUp ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+        if (yoyDiff) {
+          yoyDiff.innerText = `${isUp ? '+' : ''}${formatCurrency(diff)} vs ${matchPrev.date}`;
+        }
+        if (yoyDetails) {
+          yoyDetails.innerText = `Current week: ${formatCurrency(currentTotal)} | Prev Year: ${formatCurrency(prevTotal)} (${matchPrev.date})`;
+        }
+      } else {
+        if (yoyTitle) yoyTitle.innerText = `Week ${weekNum} (${currentYear})`;
+        if (yoyBadge) yoyBadge.innerText = "Baseline";
+        if (yoyPercent) yoyPercent.innerText = formatCurrency(currentTotal);
+        if (yoyDiff) yoyDiff.innerText = `No ${previousYear} record found for comparison.`;
+        if (yoyDetails) yoyDetails.innerText = "Add previous year records to view Year-over-Year percentage changes.";
+      }
+    }
+
+    function setFinanceHorizon(horizon) {
+      currentFinanceHorizon = horizon;
+      const btnW = document.getElementById('horizonBtnWeek');
+      const btnM = document.getElementById('horizonBtnMonth');
+      const btnY = document.getElementById('horizonBtnYear');
+
+      [btnW, btnM, btnY].forEach(b => {
+        if (b) b.className = "px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900";
+      });
+
+      if (horizon === 'week' && btnW) btnW.className = "px-3 py-1.5 rounded-lg bg-white shadow-sm text-slate-800 font-bold";
+      if (horizon === 'month' && btnM) btnM.className = "px-3 py-1.5 rounded-lg bg-white shadow-sm text-slate-800 font-bold";
+      if (horizon === 'year' && btnY) btnY.className = "px-3 py-1.5 rounded-lg bg-white shadow-sm text-slate-800 font-bold";
+
+      const titleEl = document.getElementById('financeChartTitle');
+      const subEl = document.getElementById('financeChartSubtitle');
+      if (horizon === 'week') {
+        if (titleEl) titleEl.innerText = "Weekly Contribution Trends";
+        if (subEl) subEl.innerText = "Stacked offering breakdown by Sunday date and fund";
+      } else if (horizon === 'month') {
+        if (titleEl) titleEl.innerText = "Monthly Giving Aggregates";
+        if (subEl) subEl.innerText = "Summed offerings grouped by calendar month";
+      } else {
+        if (titleEl) titleEl.innerText = "Yearly Historical Comparisons";
+        if (subEl) subEl.innerText = "Annual church contribution totals year-over-year";
+      }
+
+      renderFinanceTrendChart();
+    }
+
+    function toggleFinanceChartType(type) {
+      currentFinanceChartType = type;
+      const barBtn = document.getElementById('btnFinChartBar');
+      const lineBtn = document.getElementById('btnFinChartLine');
+      if (type === 'bar') {
+        barBtn.className = "px-2.5 py-1 rounded-lg font-semibold bg-amber-50 text-amber-800 border border-amber-200";
+        lineBtn.className = "px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:bg-slate-100";
+      } else {
+        lineBtn.className = "px-2.5 py-1 rounded-lg font-semibold bg-amber-50 text-amber-800 border border-amber-200";
+        barBtn.className = "px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:bg-slate-100";
+      }
+      renderFinanceTrendChart();
+    }
+
+    function renderFinanceTrendChart() {
+      const canvas = document.getElementById('financeTrendChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (financeTrendChartInstance) financeTrendChartInstance.destroy();
+
+      const sorted = [...givingRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      let labels = [];
+      let generalData = [];
+      let ssData = [];
+      let onlineData = [];
+      let buildingData = [];
+      let customData = [];
+
+      if (currentFinanceHorizon === 'week') {
+        // Last 10 records
+        const slice = sorted.slice(-10);
+        labels = slice.map(r => r.date);
+        generalData = slice.map(r => Number(r.general) || 0);
+        ssData = slice.map(r => Number(r.sundaySchool) || 0);
+        onlineData = slice.map(r => Number(r.online) || 0);
+        buildingData = slice.map(r => Number(r.building) || 0);
+        customData = slice.map(r => (r.customCategories || []).reduce((acc, c) => acc + (Number(c.amount) || 0), 0));
+      } else if (currentFinanceHorizon === 'month') {
+        // Group by YYYY-MM
+        const monthMap = {};
+        sorted.forEach(r => {
+          const key = r.date.substring(0, 7); // e.g. "2026-09"
+          if (!monthMap[key]) {
+            monthMap[key] = { general: 0, ss: 0, online: 0, building: 0, custom: 0 };
+          }
+          monthMap[key].general += Number(r.general) || 0;
+          monthMap[key].ss += Number(r.sundaySchool) || 0;
+          monthMap[key].online += Number(r.online) || 0;
+          monthMap[key].building += Number(r.building) || 0;
+          monthMap[key].custom += (r.customCategories || []).reduce((acc, c) => acc + (Number(c.amount) || 0), 0);
+        });
+
+        labels = Object.keys(monthMap).sort();
+        generalData = labels.map(k => monthMap[k].general);
+        ssData = labels.map(k => monthMap[k].ss);
+        onlineData = labels.map(k => monthMap[k].online);
+        buildingData = labels.map(k => monthMap[k].building);
+        customData = labels.map(k => monthMap[k].custom);
+      } else {
+        // Group by Year
+        const yearMap = {};
+        sorted.forEach(r => {
+          const key = r.date.substring(0, 4); // e.g. "2026"
+          if (!yearMap[key]) {
+            yearMap[key] = { general: 0, ss: 0, online: 0, building: 0, custom: 0 };
+          }
+          yearMap[key].general += Number(r.general) || 0;
+          yearMap[key].ss += Number(r.sundaySchool) || 0;
+          yearMap[key].online += Number(r.online) || 0;
+          yearMap[key].building += Number(r.building) || 0;
+          yearMap[key].custom += (r.customCategories || []).reduce((acc, c) => acc + (Number(c.amount) || 0), 0);
+        });
+
+        labels = Object.keys(yearMap).sort();
+        generalData = labels.map(k => yearMap[k].general);
+        ssData = labels.map(k => yearMap[k].ss);
+        onlineData = labels.map(k => yearMap[k].online);
+        buildingData = labels.map(k => yearMap[k].building);
+        customData = labels.map(k => yearMap[k].custom);
+      }
+
+      const isBar = currentFinanceChartType === 'bar';
+
+      financeTrendChartInstance = new Chart(ctx, {
+        type: currentFinanceChartType,
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'General Tithes',
+              data: generalData,
+              backgroundColor: '#059669',
+              borderColor: '#059669',
+              borderRadius: isBar ? 4 : 0,
+              tension: 0.25
+            },
+            {
+              label: 'Sunday School',
+              data: ssData,
+              backgroundColor: '#0284c7',
+              borderColor: '#0284c7',
+              borderRadius: isBar ? 4 : 0,
+              tension: 0.25
+            },
+            {
+              label: 'Online Giving',
+              data: onlineData,
+              backgroundColor: '#6366f1',
+              borderColor: '#6366f1',
+              borderRadius: isBar ? 4 : 0,
+              tension: 0.25
+            },
+            {
+              label: 'Building Fund',
+              data: buildingData,
+              backgroundColor: '#d97706',
+              borderColor: '#d97706',
+              borderRadius: isBar ? 4 : 0,
+              tension: 0.25
+            },
+            {
+              label: 'Custom Offerings',
+              data: customData,
+              backgroundColor: '#a855f7',
+              borderColor: '#a855f7',
+              borderRadius: isBar ? 4 : 0,
+              tension: 0.25
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              stacked: isBar,
+              grid: { display: false },
+              ticks: { font: { size: 10 } }
+            },
+            y: {
+              stacked: isBar,
+              beginAtZero: true,
+              ticks: {
+                font: { size: 10 },
+                callback: function(v) { return '$' + v.toLocaleString(); }
+              },
+              grid: { color: '#f1f5f9' }
+            }
+          },
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 11 } } },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ` ${context.dataset.label}: $${Number(context.raw || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderFinanceDistributionChart() {
+      const canvas = document.getElementById('financeDistributionChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (financeDistributionChartInstance) financeDistributionChartInstance.destroy();
+
+      // Aggregate all records for latest year
+      const sorted = [...givingRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+      const latest = sorted[sorted.length - 1];
+      const targetYear = latest ? new Date(latest.date).getFullYear() : 2026;
+      const yearRecords = sorted.filter(r => new Date(r.date).getFullYear() === targetYear);
+
+      let gen = 0, ss = 0, onl = 0, bld = 0, custom = 0;
+      yearRecords.forEach(r => {
+        gen += Number(r.general) || 0;
+        ss += Number(r.sundaySchool) || 0;
+        onl += Number(r.online) || 0;
+        bld += Number(r.building) || 0;
+        custom += (r.customCategories || []).reduce((acc, c) => acc + (Number(c.amount) || 0), 0);
+      });
+
+      const total = gen + ss + onl + bld + custom;
+
+      financeDistributionChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['General Tithes', 'Sunday School', 'Online Giving', 'Building Fund', 'Custom Offerings'],
+          datasets: [{
+            data: [gen, ss, onl, bld, custom],
+            backgroundColor: ['#059669', '#0284c7', '#6366f1', '#d97706', '#a855f7']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const val = Number(ctx.raw || 0);
+                  const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                  return ` ${ctx.label}: $${val.toLocaleString()} (${pct}%)`;
+                }
+              }
+            }
+          },
+          cutout: '70%'
+        }
+      });
+
+      // Update Legend Box
+      const legendBox = document.getElementById('financeFundLegend');
+      if (legendBox) {
+        legendBox.innerHTML = `
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span><span>General (${total > 0 ? Math.round((gen/total)*100) : 0}%)</span></div>
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-600"></span><span>SS (${total > 0 ? Math.round((ss/total)*100) : 0}%)</span></div>
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span><span>Online (${total > 0 ? Math.round((onl/total)*100) : 0}%)</span></div>
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span><span>Building (${total > 0 ? Math.round((bld/total)*100) : 0}%)</span></div>
+        `;
+      }
+    }
+
+    function renderGivingLedgerTable() {
+      const tbody = document.getElementById('givingTableBody');
+      if (!tbody) return;
+
+      const sorted = [...givingRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
+      const countEl = document.getElementById('givingRecordCount');
+      if (countEl) countEl.innerText = `${sorted.length} record(s)`;
+
+      tbody.innerHTML = sorted.map(r => {
+        const total = calculateGivingRecordTotal(r);
+        const customText = (r.customCategories && r.customCategories.length > 0)
+          ? r.customCategories.map(c => `<span class="bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded text-[10px] font-semibold">${escapeHtml(c.name)}: $${Number(c.amount).toFixed(2)}</span>`).join(' ')
+          : '<span class="text-slate-400">—</span>';
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-2.5 px-3 font-semibold text-slate-800">${escapeHtml(r.date)}</td>
+            <td class="py-2.5 px-3 font-bold text-emerald-700">${formatCurrency(r.general)}</td>
+            <td class="py-2.5 px-3 font-medium text-sky-700">${formatCurrency(r.sundaySchool)}</td>
+            <td class="py-2.5 px-3 font-medium text-indigo-700">${formatCurrency(r.online)}</td>
+            <td class="py-2.5 px-3 text-slate-700">${formatCurrency(r.building)}</td>
+            <td class="py-2.5 px-3 space-x-1">${customText}</td>
+            <td class="py-2.5 px-3 font-bold text-amber-900 bg-amber-50/50">${formatCurrency(total)}</td>
+            <td class="py-2.5 px-3 text-slate-500 italic max-w-xs truncate">${escapeHtml(r.notes || '—')}</td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap">
+              <button onclick="editGivingRecord('${r.id}')" class="text-amber-600 hover:text-amber-800 font-semibold mr-2">Edit</button>
+              <button onclick="deleteGivingRecord('${r.id}')" class="text-rose-600 hover:text-rose-800 font-semibold">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    /* Modal Form Handlers for Giving */
+
+    function openRecordGivingModal() {
+      document.getElementById('editGivingId').value = "";
+      document.getElementById('giveDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('giveGeneral').value = "";
+      document.getElementById('giveSundaySchool').value = "";
+      document.getElementById('giveOnline').value = "";
+      document.getElementById('giveBuilding').value = "";
+      document.getElementById('giveNotes').value = "";
+      document.getElementById('customGivingRows').innerHTML = "";
+      document.getElementById('giveLiveTotal').innerText = "$0.00";
+      document.getElementById('btnDeleteGiving').classList.add('hidden');
+      document.getElementById('givingModalTitle').innerText = "Record Weekly Tithes & Offerings";
+      document.getElementById('givingModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function editGivingRecord(id) {
+      const record = givingRecords.find(r => r.id === id);
+      if (!record) return;
+
+      document.getElementById('editGivingId').value = record.id;
+      document.getElementById('giveDate').value = record.date || "";
+      document.getElementById('giveGeneral').value = record.general || "";
+      document.getElementById('giveSundaySchool').value = record.sundaySchool || "";
+      document.getElementById('giveOnline').value = record.online || "";
+      document.getElementById('giveBuilding').value = record.building || "";
+      document.getElementById('giveNotes').value = record.notes || "";
+
+      const customContainer = document.getElementById('customGivingRows');
+      customContainer.innerHTML = "";
+      if (record.customCategories && record.customCategories.length > 0) {
+        record.customCategories.forEach(c => addCustomGivingField(c.name, c.amount));
+      }
+
+      updateGivingModalLiveTotal();
+      document.getElementById('btnDeleteGiving').classList.remove('hidden');
+      document.getElementById('givingModalTitle').innerText = "Edit Financial Contribution";
+      document.getElementById('givingModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeRecordGivingModal() {
+      document.getElementById('givingModal').classList.add('hidden');
+    }
+
+    function addCustomGivingField(name = "", amount = "") {
+      const container = document.getElementById('customGivingRows');
+      const rowId = 'customRow_' + Date.now() + Math.random().toString(36).substring(2, 6);
+      const row = document.createElement('div');
+      row.id = rowId;
+      row.className = "flex items-center gap-2";
+      row.innerHTML = `
+        <input type="text" placeholder="Category Name (e.g. VBS, Benevolence)" value="${escapeHtml(name)}" class="custom-cat-name flex-1 p-2 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-amber-500 font-medium">
+        <input type="number" step="0.01" min="0" placeholder="Amount ($)" value="${amount}" oninput="updateGivingModalLiveTotal()" class="custom-cat-amount w-28 p-2 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-amber-500 font-bold text-amber-950">
+        <button type="button" onclick="document.getElementById('${rowId}').remove(); updateGivingModalLiveTotal();" class="text-slate-400 hover:text-rose-600 p-1">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      `;
+      container.appendChild(row);
+      lucide.createIcons();
+      updateGivingModalLiveTotal();
+    }
+
+    function updateGivingModalLiveTotal() {
+      const gen = parseFloat(document.getElementById('giveGeneral').value) || 0;
+      const ss = parseFloat(document.getElementById('giveSundaySchool').value) || 0;
+      const onl = parseFloat(document.getElementById('giveOnline').value) || 0;
+      const bld = parseFloat(document.getElementById('giveBuilding').value) || 0;
+
+      let customSum = 0;
+      const customAmounts = document.querySelectorAll('.custom-cat-amount');
+      customAmounts.forEach(input => {
+        customSum += parseFloat(input.value) || 0;
+      });
+
+      const total = gen + ss + onl + bld + customSum;
+      const totalEl = document.getElementById('giveLiveTotal');
+      if (totalEl) totalEl.innerText = formatCurrency(total);
+    }
+
+    function handleSaveGiving(e) {
+      e.preventDefault();
+      const id = document.getElementById('editGivingId').value;
+      const date = document.getElementById('giveDate').value;
+      const general = parseFloat(document.getElementById('giveGeneral').value) || 0;
+      const sundaySchool = parseFloat(document.getElementById('giveSundaySchool').value) || 0;
+      const online = parseFloat(document.getElementById('giveOnline').value) || 0;
+      const building = parseFloat(document.getElementById('giveBuilding').value) || 0;
+      const notes = document.getElementById('giveNotes').value.trim();
+
+      // Collect custom categories
+      const customRows = document.querySelectorAll('#customGivingRows > div');
+      const customCategories = [];
+      customRows.forEach(row => {
+        const nameInput = row.querySelector('.custom-cat-name');
+        const amountInput = row.querySelector('.custom-cat-amount');
+        if (nameInput && amountInput) {
+          const cName = nameInput.value.trim();
+          const cAmt = parseFloat(amountInput.value) || 0;
+          if (cName && cAmt > 0) {
+            customCategories.push({ name: cName, amount: cAmt });
+          }
+        }
+      });
+
+      if (id) {
+        const idx = givingRecords.findIndex(r => r.id === id);
+        if (idx !== -1) {
+          givingRecords[idx] = { ...givingRecords[idx], date, general, sundaySchool, online, building, customCategories, notes };
+          showToast("Financial record updated!");
+        }
+      } else {
+        const newRecord = {
+          id: 'giv-' + Date.now(),
+          date,
+          general,
+          sundaySchool,
+          online,
+          building,
+          customCategories,
+          notes
+        };
+        givingRecords.push(newRecord);
+        showToast("Weekly tithes and offerings saved!");
+      }
+
+      saveGivingToStorage();
+      closeRecordGivingModal();
+      renderFinances();
+    }
+
+    function handleDeleteGiving() {
+      const id = document.getElementById('editGivingId').value;
+      if (!id) return;
+      deleteGivingRecord(id);
+      closeRecordGivingModal();
+    }
+
+    function deleteGivingRecord(id) {
+      givingRecords = givingRecords.filter(r => r.id !== id);
+      saveGivingToStorage();
+      renderFinances();
+      showToast("Giving entry removed.");
+    }
+
+    function exportGivingCsv() {
+      let csv = "Date,General Tithes,Sunday School,Online Giving,Building Fund,Custom Offerings,Total Offering,Notes\n";
+      const sorted = [...givingRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+      sorted.forEach(r => {
+        const tot = calculateGivingRecordTotal(r);
+        const customDetails = (r.customCategories || []).map(c => `${c.name}: $${c.amount}`).join('; ');
+        csv += `"${r.date}",${r.general || 0},${r.sundaySchool || 0},${r.online || 0},${r.building || 0},"${customDetails}",${tot},"${(r.notes || '').replace(/"/g, '""')}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Crow_Mountain_Baptist_Giving_Ledger_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast("Giving ledger exported to CSV!");
+    }
+
+    /* =========================================================================
+       DASHBOARD & ATTENDANCE LOGIC
+       ========================================================================= */
+
+    function renderDashboard() {
+      // Key Counts
+      const activeCount = members.filter(m => m.status === 'Active').length;
+      const homeboundCount = members.filter(m => m.status === 'Homebound').length;
+      const prayersCount = prayerRequests.length;
+
+      const householdsSet = new Set(members.map(m => (m.household && m.household.trim()) ? m.household.trim() : `${m.lastName} Family`));
+
+      const elActive = document.getElementById('statActive');
+      const elHouseholds = document.getElementById('statHouseholds');
+      const elHomebound = document.getElementById('statHomebound');
+      const elPrayers = document.getElementById('statPrayers');
+
+      if (elActive) elActive.innerText = activeCount;
+      if (elHouseholds) elHouseholds.innerText = householdsSet.size;
+      if (elHomebound) elHomebound.innerText = homeboundCount;
+      if (elPrayers) elPrayers.innerText = prayersCount;
+
+      renderAttendanceSection();
+      renderStatusChart();
+      renderClassChart();
+      renderMinistryOverview();
+      renderDashboardRecentCare();
+      renderCelebrations();
+      lucide.createIcons();
+    }
+
+    function renderAttendanceSection() {
+      const sorted = [...attendanceRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+      const latest = sorted[sorted.length - 1] || null;
+
+      const summaryContainer = document.getElementById('latestAttendanceSummary');
+      if (summaryContainer) {
+        if (!latest) {
+          summaryContainer.innerHTML = `<div class="col-span-5 text-xs text-slate-400 py-3 italic">No attendance records logged yet.</div>`;
+        } else {
+          const totalLatest = (Number(latest.mainService) || 0) + (Number(latest.sundaySchool) || 0) + (Number(latest.smallGroups) || 0) + (Number(latest.youthGroup) || 0) + (Number(latest.wedBible) || 0);
+          summaryContainer.innerHTML = `
+            <div class="p-3 bg-emerald-50/70 border border-emerald-100 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-emerald-800">Main Worship</span>
+              <div class="text-xl font-extrabold text-emerald-950 mt-0.5">${latest.mainService || 0}</div>
+              <span class="text-[10px] text-emerald-600 font-medium">Sunday Sanctuary</span>
+            </div>
+            <div class="p-3 bg-sky-50/70 border border-sky-100 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-sky-800">Sunday School</span>
+              <div class="text-xl font-extrabold text-sky-950 mt-0.5">${latest.sundaySchool || 0}</div>
+              <span class="text-[10px] text-sky-600 font-medium">Bible Study Classes</span>
+            </div>
+            <div class="p-3 bg-amber-50/70 border border-amber-100 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-amber-800">Small Groups</span>
+              <div class="text-xl font-extrabold text-amber-950 mt-0.5">${latest.smallGroups || 0}</div>
+              <span class="text-[10px] text-amber-600 font-medium">Weekly Groups</span>
+            </div>
+            <div class="p-3 bg-purple-50/70 border border-purple-100 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-purple-800">Youth Group</span>
+              <div class="text-xl font-extrabold text-purple-950 mt-0.5">${latest.youthGroup || 0}</div>
+              <span class="text-[10px] text-purple-600 font-medium">Students</span>
+            </div>
+            <div class="p-3 bg-slate-900 text-white rounded-xl flex flex-col justify-between">
+              <span class="text-[10px] uppercase font-bold text-slate-300">Total Week</span>
+              <div class="text-xl font-extrabold text-emerald-400 mt-0.5">${totalLatest}</div>
+              <span class="text-[10px] text-slate-400">${latest.date}</span>
+            </div>
+          `;
+        }
+      }
+
+      renderAttendanceChart(sorted);
+      renderAttendanceTable(sorted);
+    }
+
+    function toggleChartType(type) {
+      currentChartType = type;
+      const lineBtn = document.getElementById('chartTypeLineBtn');
+      const barBtn = document.getElementById('chartTypeBarBtn');
+      if (lineBtn && barBtn) {
+        if (type === 'line') {
+          lineBtn.className = "px-2.5 py-1 rounded-lg font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200";
+          barBtn.className = "px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:bg-slate-100";
+        } else {
+          barBtn.className = "px-2.5 py-1 rounded-lg font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200";
+          lineBtn.className = "px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:bg-slate-100";
+        }
+      }
+      const sorted = [...attendanceRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+      renderAttendanceChart(sorted);
+    }
+
+    function renderAttendanceChart(sorted) {
+      const canvas = document.getElementById('attendanceChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (attendanceChartInstance) attendanceChartInstance.destroy();
+
+      const labels = sorted.map(r => r.date);
+      const mainData = sorted.map(r => Number(r.mainService) || 0);
+      const ssData = sorted.map(r => Number(r.sundaySchool) || 0);
+      const smallData = sorted.map(r => Number(r.smallGroups) || 0);
+      const youthData = sorted.map(r => Number(r.youthGroup) || 0);
+      const wedData = sorted.map(r => Number(r.wedBible) || 0);
+
+      const isBar = currentChartType === 'bar';
+
+      attendanceChartInstance = new Chart(ctx, {
+        type: currentChartType,
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Main Worship',
+              data: mainData,
+              borderColor: '#059669',
+              backgroundColor: isBar ? '#059669' : 'rgba(5, 150, 105, 0.1)',
+              tension: 0.25,
+              borderRadius: isBar ? 4 : 0
+            },
+            {
+              label: 'Sunday School',
+              data: ssData,
+              borderColor: '#0284c7',
+              backgroundColor: isBar ? '#0284c7' : 'rgba(2, 132, 199, 0.1)',
+              tension: 0.25,
+              borderRadius: isBar ? 4 : 0
+            },
+            {
+              label: 'Small Groups',
+              data: smallData,
+              borderColor: '#d97706',
+              backgroundColor: isBar ? '#d97706' : 'rgba(217, 119, 6, 0.1)',
+              tension: 0.25,
+              borderRadius: isBar ? 4 : 0
+            },
+            {
+              label: 'Youth Group',
+              data: youthData,
+              borderColor: '#7c3aed',
+              backgroundColor: isBar ? '#7c3aed' : 'rgba(124, 58, 237, 0.1)',
+              tension: 0.25,
+              borderRadius: isBar ? 4 : 0
+            },
+            {
+              label: 'Wed Bible Study',
+              data: wedData,
+              borderColor: '#e11d48',
+              backgroundColor: isBar ? '#e11d48' : 'rgba(225, 29, 72, 0.1)',
+              tension: 0.25,
+              borderRadius: isBar ? 4 : 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 10 } }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { font: { size: 10 } },
+              grid: { color: '#f1f5f9' }
+            }
+          },
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 11 } } }
+          }
+        }
+      });
+    }
+
+    function renderAttendanceTable(sorted) {
+      const tbody = document.getElementById('attendanceTableBody');
+      const countEl = document.getElementById('attendanceTotalCount');
+      if (!tbody) return;
+
+      if (countEl) countEl.innerText = `${sorted.length} record(s)`;
+      const reversed = [...sorted].reverse();
+
+      tbody.innerHTML = reversed.map(r => {
+        const total = (Number(r.mainService) || 0) + (Number(r.sundaySchool) || 0) + (Number(r.smallGroups) || 0) + (Number(r.youthGroup) || 0) + (Number(r.wedBible) || 0);
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-2.5 px-3 font-semibold text-slate-800">${escapeHtml(r.date)}</td>
+            <td class="py-2.5 px-3 font-bold text-emerald-700">${r.mainService || 0}</td>
+            <td class="py-2.5 px-3 font-medium text-slate-700">${r.sundaySchool || 0}</td>
+            <td class="py-2.5 px-3 text-slate-600">${r.smallGroups || 0}</td>
+            <td class="py-2.5 px-3 text-slate-600">${r.youthGroup || 0}</td>
+            <td class="py-2.5 px-3 text-slate-600">${r.wedBible || 0}</td>
+            <td class="py-2.5 px-3 font-bold text-indigo-700 bg-indigo-50/40">${total}</td>
+            <td class="py-2.5 px-3 text-slate-500 italic max-w-xs truncate">${escapeHtml(r.notes || '—')}</td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap">
+              <button onclick="editAttendanceRecord('${r.id}')" class="text-indigo-600 hover:text-indigo-800 font-semibold mr-2">Edit</button>
+              <button onclick="deleteAttendanceRecord('${r.id}')" class="text-rose-600 hover:text-rose-800 font-semibold">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openLogAttendanceModal() {
+      document.getElementById('editAttendanceId').value = "";
+      document.getElementById('attDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('attMainService').value = "";
+      document.getElementById('attSundaySchool').value = "";
+      document.getElementById('attSmallGroups').value = "";
+      document.getElementById('attYouthGroup').value = "";
+      document.getElementById('attWedBible').value = "";
+      document.getElementById('attNotes').value = "";
+      document.getElementById('btnDeleteAttendance').classList.add('hidden');
+      document.getElementById('attendanceModalTitle').innerText = "Record Attendance Numbers";
+      document.getElementById('attendanceModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function editAttendanceRecord(id) {
+      const rec = attendanceRecords.find(r => r.id === id);
+      if (!rec) return;
+      document.getElementById('editAttendanceId').value = rec.id;
+      document.getElementById('attDate').value = rec.date || "";
+      document.getElementById('attMainService').value = rec.mainService || "";
+      document.getElementById('attSundaySchool').value = rec.sundaySchool || "";
+      document.getElementById('attSmallGroups').value = rec.smallGroups || "";
+      document.getElementById('attYouthGroup').value = rec.youthGroup || "";
+      document.getElementById('attWedBible').value = rec.wedBible || "";
+      document.getElementById('attNotes').value = rec.notes || "";
+      document.getElementById('btnDeleteAttendance').classList.remove('hidden');
+      document.getElementById('attendanceModalTitle').innerText = "Edit Attendance Record";
+      document.getElementById('attendanceModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeLogAttendanceModal() {
+      document.getElementById('attendanceModal').classList.add('hidden');
+    }
+
+    function handleSaveAttendance(e) {
+      e.preventDefault();
+      const id = document.getElementById('editAttendanceId').value;
+      const date = document.getElementById('attDate').value;
+      const mainService = parseInt(document.getElementById('attMainService').value) || 0;
+      const sundaySchool = parseInt(document.getElementById('attSundaySchool').value) || 0;
+      const smallGroups = parseInt(document.getElementById('attSmallGroups').value) || 0;
+      const youthGroup = parseInt(document.getElementById('attYouthGroup').value) || 0;
+      const wedBible = parseInt(document.getElementById('attWedBible').value) || 0;
+      const notes = document.getElementById('attNotes').value.trim();
+
+      if (id) {
+        const idx = attendanceRecords.findIndex(r => r.id === id);
+        if (idx !== -1) {
+          attendanceRecords[idx] = { ...attendanceRecords[idx], date, mainService, sundaySchool, smallGroups, youthGroup, wedBible, notes };
+          showToast("Attendance record updated!");
+        }
+      } else {
+        const newRecord = {
+          id: 'att-' + Date.now(),
+          date,
+          mainService,
+          sundaySchool,
+          smallGroups,
+          youthGroup,
+          wedBible,
+          notes
+        };
+        attendanceRecords.push(newRecord);
+        showToast("Attendance count saved!");
+      }
+
+      saveAttendanceToStorage();
+      closeLogAttendanceModal();
+      renderDashboard();
+    }
+
+    function handleDeleteAttendance() {
+      const id = document.getElementById('editAttendanceId').value;
+      if (!id) return;
+      deleteAttendanceRecord(id);
+      closeLogAttendanceModal();
+    }
+
+    function deleteAttendanceRecord(id) {
+      attendanceRecords = attendanceRecords.filter(r => r.id !== id);
+      saveAttendanceToStorage();
+      renderDashboard();
+      showToast("Attendance entry removed.");
+    }
+
+    function exportAttendanceCsv() {
+      let csv = "Date,Main Worship,Sunday School,Small Groups,Youth Group,Wed Bible Study,Weekly Total,Notes\n";
+      const sorted = [...attendanceRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+      sorted.forEach(r => {
+        const total = (Number(r.mainService) || 0) + (Number(r.sundaySchool) || 0) + (Number(r.smallGroups) || 0) + (Number(r.youthGroup) || 0) + (Number(r.wedBible) || 0);
+        csv += `"${r.date}",${r.mainService || 0},${r.sundaySchool || 0},${r.smallGroups || 0},${r.youthGroup || 0},${r.wedBible || 0},${total},"${(r.notes || '').replace(/"/g, '""')}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Crow_Mountain_Baptist_Attendance_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast("Attendance records exported to CSV!");
+    }
+
+    function renderStatusChart() {
+      const canvas = document.getElementById('statusChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (statusChartInstance) statusChartInstance.destroy();
+
+      const counts = { Active: 0, Homebound: 0, Visitor: 0, Moved: 0, Deceased: 0, Other: 0 };
+      members.forEach(m => {
+        if (counts[m.status] !== undefined) counts[m.status]++;
+        else counts.Other++;
+      });
+
+      statusChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Active', 'Homebound', 'Visitor', 'Moved', 'Deceased', 'Other'],
+          datasets: [{
+            data: [counts.Active, counts.Homebound, counts.Visitor, counts.Moved, counts.Deceased, counts.Other],
+            backgroundColor: ['#10b981', '#f59e0b', '#38bdf8', '#a855f7', '#64748b', '#cbd5e1']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
+          cutout: '65%'
+        }
+      });
+    }
+
+    function renderClassChart() {
+      const canvas = document.getElementById('classChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (classChartInstance) classChartInstance.destroy();
+
+      const classes = { 'Senior Adults': 0, 'Adults': 0, 'Young Adults': 0, 'Youth': 0, 'Children': 0 };
+      members.forEach(m => {
+        if (classes[m.sundaySchool] !== undefined) classes[m.sundaySchool]++;
+      });
+
+      classChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(classes),
+          datasets: [{
+            label: 'Enrolled Members',
+            data: Object.values(classes),
+            backgroundColor: '#0284c7',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+            y: { beginAtZero: true, ticks: { stepSize: 2, font: { size: 10 } } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderMinistryOverview() {
+      const container = document.getElementById('ministryOverviewList');
+      if (!container) return;
+
+      const roles = [
+        { label: "Worship, Choir & Tech", icon: "mic", filter: /choir|sound|audio|livestream/i, color: "text-purple-600 bg-purple-50" },
+        { label: "Children & Youth Workers", icon: "smile", filter: /children|youth|nursery/i, color: "text-sky-600 bg-sky-50" },
+        { label: "Sunday School Teachers", icon: "book-open", filter: /teacher/i, color: "text-emerald-600 bg-emerald-50" },
+        { label: "Ushers & Hospitality", icon: "users", filter: /usher|hospitality|cemetery/i, color: "text-amber-600 bg-amber-50" },
+        { label: "Building, Grounds & Maint.", icon: "wrench", filter: /building|grounds|maintenance/i, color: "text-rose-600 bg-rose-50" }
+      ];
+
+      container.innerHTML = roles.map(r => {
+        const count = members.filter(m => r.filter.test(m.ministries || '')).length;
+        return `
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg ${r.color} flex items-center justify-center">
+                <i data-lucide="${r.icon}" class="w-3.5 h-3.5"></i>
+              </span>
+              <span class="text-xs font-semibold text-slate-700">${r.label}</span>
+            </div>
+            <span class="text-xs font-bold text-slate-800 bg-white px-2 py-0.5 rounded-full border border-slate-200">${count} active</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderDashboardRecentCare() {
+      const container = document.getElementById('dashboardRecentCare');
+      if (!container) return;
+      const recent = careLogs.slice(0, 3);
+      if (recent.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-3 italic">No recent pastoral care entries.</p>`;
+        return;
+      }
+      container.innerHTML = recent.map(c => `
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-800">${escapeHtml(c.memberName)}</span>
+            <span class="text-[10px] text-slate-400">${escapeHtml(c.date)}</span>
+          </div>
+          <div class="text-slate-600 truncate">${escapeHtml(c.notes)}</div>
+          <div class="text-[10px] text-emerald-700 font-semibold">${escapeHtml(c.type)} • Staff: ${escapeHtml(c.staff)}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderCelebrations() {
+      const container = document.getElementById('dashboardCelebrations');
+      if (!container) return;
+
+      const upcoming = members.filter(m => m.birthday && m.status !== 'Deceased').slice(0, 4);
+      if (upcoming.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-3 italic">No upcoming celebrations recorded.</p>`;
+        return;
+      }
+
+      container.innerHTML = upcoming.map(m => `
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-amber-50/50 border border-amber-100 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[11px]">
+              <i data-lucide="cake" class="w-3.5 h-3.5 text-amber-700"></i>
+            </span>
+            <div>
+              <div class="font-semibold text-slate-800">${escapeHtml(m.firstName)} ${escapeHtml(m.lastName)}</div>
+              <div class="text-[10px] text-slate-500">${escapeHtml(m.household || 'Church Member')}</div>
+            </div>
+          </div>
+          <span class="font-bold text-amber-900 bg-white px-2 py-0.5 rounded-md border border-amber-200 text-[11px]">${escapeHtml(m.birthday)}</span>
+        </div>
+      `).join('');
+    }
+
+    /* =========================================================================
+       MEMBER DIRECTORY & FILTERS
+       ========================================================================= */
+
+    function applyFilters() {
+      const search = (document.getElementById('directorySearch')?.value || "").toLowerCase();
+      const status = document.getElementById('filterStatus')?.value || "ALL";
+      const ssClass = document.getElementById('filterClass')?.value || "ALL";
+
+      const filtered = members.filter(m => {
+        const fullName = `${m.firstName || ''} ${m.lastName || ''}`.toLowerCase();
+        const fullAddr = (m.address || '').toLowerCase();
+        const fullPhone = (m.phone || '').toLowerCase();
+        const fullEmail = (m.email || '').toLowerCase();
+        const matchesSearch = !search || fullName.includes(search) || fullAddr.includes(search) || fullPhone.includes(search) || fullEmail.includes(search);
+
+        const matchesStatus = (status === "ALL") || (m.status === status);
+        const matchesClass = (ssClass === "ALL") || (m.sundaySchool === ssClass);
+
+        return matchesSearch && matchesStatus && matchesClass;
+      });
+
+      renderMemberList(filtered);
+    }
+
+    function renderMemberList(list) {
+      const tbody = document.getElementById('memberTableBody');
+      const badge = document.getElementById('memberCountBadge');
+      const noResults = document.getElementById('noResults');
+      if (!tbody) return;
+
+      if (badge) badge.innerText = list.length;
+
+      if (list.length === 0) {
+        tbody.innerHTML = "";
+        if (noResults) noResults.classList.remove('hidden');
+        return;
+      }
+
+      if (noResults) noResults.classList.add('hidden');
+
+      tbody.innerHTML = list.map(m => {
+        let statusBadge = `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-bold">Active</span>`;
+        if (m.status === 'Homebound') statusBadge = `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full text-[10px] font-bold">Homebound</span>`;
+        else if (m.status === 'Visitor') statusBadge = `<span class="bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full text-[10px] font-bold">Visitor</span>`;
+        else if (m.status === 'Moved') statusBadge = `<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-[10px] font-bold">Moved Letter</span>`;
+        else if (m.status === 'Deceased') statusBadge = `<span class="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full text-[10px] font-bold">✝ Deceased</span>`;
+        else if (m.status === 'Inactive') statusBadge = `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full text-[10px] font-bold">Inactive</span>`;
+        else if (m.status === 'Youth') statusBadge = `<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full text-[10px] font-bold">Youth</span>`;
+
+        let milestoneInfo = '';
+        if (m.status === 'Deceased' && m.deceasedDate) {
+          milestoneInfo = `<div class="text-[10px] text-rose-700 font-semibold mt-0.5">Passed: ${escapeHtml(m.deceasedDate)}</div>`;
+        } else if (m.joinDate) {
+          milestoneInfo = `<div class="text-[10px] text-slate-400 mt-0.5">Joined: ${escapeHtml(m.joinDate)}</div>`;
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-900">${escapeHtml(m.firstName)} ${escapeHtml(m.lastName)}</div>
+              <div class="text-xs text-slate-400">${escapeHtml(m.household || `${m.lastName} Family`)}</div>
+            </td>
+            <td class="py-3 px-4">
+              ${statusBadge}
+              ${milestoneInfo}
+            </td>
+            <td class="py-3 px-4 text-xs font-medium text-slate-700">${escapeHtml(m.sundaySchool || 'General')}</td>
+            <td class="py-3 px-4 text-xs">
+              <div class="font-semibold text-slate-800">${escapeHtml(m.phone || 'No phone')}</div>
+              <div class="text-slate-400 truncate max-w-[160px]">${escapeHtml(m.email || '')}</div>
+            </td>
+            <td class="py-3 px-4 text-xs text-slate-600 max-w-[180px] truncate">${escapeHtml(m.address || '—')}</td>
+            <td class="py-3 px-4 text-xs text-slate-600 max-w-[180px] truncate">${escapeHtml(m.ministries || '—')}</td>
+            <td class="py-3 px-4 text-right whitespace-nowrap">
+              <div class="inline-flex items-center gap-1.5 justify-end">
+                <button onclick="openViewMemberModal('${m.id}')" title="View details (Read-Only)" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors">
+                  <i data-lucide="eye" class="w-3.5 h-3.5 text-slate-500"></i>
+                  <span>View</span>
+                </button>
+                <button onclick="openEditMemberModal('${m.id}')" title="Edit member record" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors">
+                  Edit
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function openViewMemberModal(id) {
+      const member = members.find(m => m.id === id);
+      if (!member) return;
+
+      const initials = `${(member.firstName || '').charAt(0)}${(member.lastName || '').charAt(0)}`.toUpperCase() || "CM";
+      const avatarEl = document.getElementById('viewModalAvatar');
+      if (avatarEl) avatarEl.innerText = initials;
+
+      const nameEl = document.getElementById('viewModalName');
+      if (nameEl) nameEl.innerText = `${member.firstName || ''} ${member.lastName || ''}`.trim();
+
+      const householdEl = document.getElementById('viewModalHousehold');
+      if (householdEl) householdEl.innerText = `${member.household || `${member.lastName || ''} Family`} • Crow Mountain Baptist Church`;
+
+      // Status badge
+      let badgeHtml = `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full text-xs font-bold">Active Member</span>`;
+      if (member.status === 'Homebound') badgeHtml = `<span class="bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full text-xs font-bold">Homebound / Shut-In</span>`;
+      else if (member.status === 'Visitor') badgeHtml = `<span class="bg-sky-100 text-sky-800 px-2.5 py-0.5 rounded-full text-xs font-bold">Visitor / Guest</span>`;
+      else if (member.status === 'Moved') badgeHtml = `<span class="bg-purple-100 text-purple-800 px-2.5 py-0.5 rounded-full text-xs font-bold">Moved / Transferred Letter</span>`;
+      else if (member.status === 'Deceased') badgeHtml = `<span class="bg-slate-200 text-slate-800 px-2.5 py-0.5 rounded-full text-xs font-bold">✝ Deceased (In Memoriam)</span>`;
+      else if (member.status === 'Inactive') badgeHtml = `<span class="bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full text-xs font-bold">Inactive</span>`;
+      else if (member.status === 'Youth') badgeHtml = `<span class="bg-rose-100 text-rose-800 px-2.5 py-0.5 rounded-full text-xs font-bold">Youth / Student</span>`;
+      
+      const statusBadgeEl = document.getElementById('viewStatusBadge');
+      if (statusBadgeEl) statusBadgeEl.innerHTML = badgeHtml;
+
+      const ssEl = document.getElementById('viewSundaySchool');
+      if (ssEl) ssEl.innerText = member.sundaySchool || "None / General";
+
+      // Milestones
+      const joinEl = document.getElementById('viewJoinedDate');
+      if (joinEl) joinEl.innerText = member.joinDate || "Not recorded";
+      
+      const movedBlock = document.getElementById('viewMovedBlock');
+      const movedEl = document.getElementById('viewMovedDate');
+      if (movedBlock && movedEl) {
+        if (member.status === 'Moved' || member.movedDate) {
+          movedBlock.classList.remove('hidden');
+          movedEl.innerText = member.movedDate || "Recorded as moved";
+        } else {
+          movedBlock.classList.add('hidden');
+        }
+      }
+
+      const deceasedBlock = document.getElementById('viewDeceasedBlock');
+      const deceasedEl = document.getElementById('viewDeceasedDate');
+      if (deceasedBlock && deceasedEl) {
+        if (member.status === 'Deceased' || member.deceasedDate) {
+          deceasedBlock.classList.remove('hidden');
+          deceasedEl.innerText = member.deceasedDate || "In Memoriam";
+        } else {
+          deceasedBlock.classList.add('hidden');
+        }
+      }
+
+      // Contact Info
+      const phoneEl = document.getElementById('viewPhone');
+      if (phoneEl) phoneEl.innerText = member.phone || "No phone listed";
+
+      const emailEl = document.getElementById('viewEmail');
+      if (emailEl) emailEl.innerText = member.email || "No email listed";
+
+      const addrEl = document.getElementById('viewAddress');
+      const mapsBtn = document.getElementById('btnOpenMaps');
+      if (addrEl) addrEl.innerText = member.address || "No street address on file";
+
+      if (mapsBtn) {
+        const rawAddr = (member.address || '').trim();
+        // Check if there is a usable physical address (avoiding empty or In Memoriam strings)
+        if (rawAddr && !rawAddr.toLowerCase().includes('in memoriam')) {
+          mapsBtn.classList.remove('hidden');
+          mapsBtn.classList.add('inline-flex');
+          mapsBtn.onclick = function() {
+            openAddressInMaps(rawAddr);
+          };
+        } else {
+          mapsBtn.classList.add('hidden');
+          mapsBtn.classList.remove('inline-flex');
+          mapsBtn.onclick = null;
+        }
+      }
+
+      const bdayEl = document.getElementById('viewBirthday');
+      if (bdayEl) bdayEl.innerText = member.birthday || "—";
+
+      const minEl = document.getElementById('viewMinistries');
+      if (minEl) minEl.innerText = member.ministries || "None currently assigned";
+
+      const notesEl = document.getElementById('viewNotes');
+      if (notesEl) notesEl.innerText = member.notes || "No pastoral or care notes recorded.";
+
+      // Hook up Switch to Edit button
+      const switchBtn = document.getElementById('btnSwitchToEdit');
+      if (switchBtn) {
+        switchBtn.onclick = function() {
+          closeViewMemberModal();
+          openEditMemberModal(id);
+        };
+      }
+
+      const modalEl = document.getElementById('viewMemberModal');
+      if (modalEl) modalEl.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeViewMemberModal() {
+      const modalEl = document.getElementById('viewMemberModal');
+      if (modalEl) modalEl.classList.add('hidden');
+    }
+
+    function openAddressInMaps(address) {
+      if (!address) return;
+      // Universal geo URI / Google Maps link that iOS Apple Maps or Android Google Maps handles natively
+      const encoded = encodeURIComponent(address);
+      const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
+      const mapsUrl = isApple 
+        ? `https://maps.apple.com/?q=${encoded}` 
+        : `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+      
+      window.open(mapsUrl, '_blank', 'noopener,noreferrer');
+    }
+
+    function openAddMemberModal() {
+      document.getElementById('editMemberId').value = "";
+      document.getElementById('editFirstName').value = "";
+      document.getElementById('editLastName').value = "";
+      document.getElementById('editStatus').value = "Active";
+      document.getElementById('editSundaySchool').value = "Adults";
+      document.getElementById('editJoinDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('editMovedDate').value = "";
+      document.getElementById('editDeceasedDate').value = "";
+      document.getElementById('editPhone').value = "";
+      document.getElementById('editEmail').value = "";
+      document.getElementById('editAddress').value = "";
+      document.getElementById('editHousehold').value = "";
+      document.getElementById('editBirthday').value = "";
+      document.getElementById('editMinistries').value = "";
+      document.getElementById('editNotes').value = "";
+
+      handleStatusChangeUI();
+      document.getElementById('modalTitle').innerText = "Add Church Member";
+      document.getElementById('modalSubtitle').innerText = "Crow Mountain Baptist Church Registry";
+      document.getElementById('btnDeleteMember').classList.add('hidden');
+      document.getElementById('memberModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function openEditMemberModal(id) {
+      const member = members.find(m => m.id === id);
+      if (!member) return;
+
+      document.getElementById('editMemberId').value = member.id;
+      document.getElementById('editFirstName').value = member.firstName || "";
+      document.getElementById('editLastName').value = member.lastName || "";
+      document.getElementById('editStatus').value = member.status || "Active";
+      document.getElementById('editSundaySchool').value = member.sundaySchool || "Adults";
+      document.getElementById('editJoinDate').value = member.joinDate || "";
+      document.getElementById('editMovedDate').value = member.movedDate || "";
+      document.getElementById('editDeceasedDate').value = member.deceasedDate || "";
+      document.getElementById('editPhone').value = member.phone || "";
+      document.getElementById('editEmail').value = member.email || "";
+      document.getElementById('editAddress').value = member.address || "";
+      document.getElementById('editHousehold').value = member.household || "";
+      document.getElementById('editBirthday').value = member.birthday || "";
+      document.getElementById('editMinistries').value = member.ministries || "";
+      document.getElementById('editNotes').value = member.notes || "";
+
+      handleStatusChangeUI();
+      document.getElementById('modalTitle').innerText = `${member.firstName} ${member.lastName}`;
+      document.getElementById('modalSubtitle').innerText = `${member.status} • ${member.household || 'Crow Mountain Member'}`;
+      document.getElementById('btnDeleteMember').classList.remove('hidden');
+      document.getElementById('memberModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeMemberModal() {
+      document.getElementById('memberModal').classList.add('hidden');
+    }
+
+    function handleStatusChangeUI() {
+      const status = document.getElementById('editStatus').value;
+      const decContainer = document.getElementById('deceasedDateContainer');
+      const decInput = document.getElementById('editDeceasedDate');
+      const movedInput = document.getElementById('editMovedDate');
+
+      if (status === 'Deceased') {
+        decContainer.classList.add('bg-rose-50', 'ring-1', 'ring-rose-300');
+        if (!decInput.value) decInput.value = new Date().toISOString().split('T')[0];
+      } else {
+        decContainer.classList.remove('bg-rose-50', 'ring-1', 'ring-rose-300');
+      }
+
+      if (status === 'Moved' && !movedInput.value) {
+        movedInput.value = new Date().toISOString().split('T')[0];
+      }
+    }
+
+    function handleSaveMember(e) {
+      e.preventDefault();
+      const id = document.getElementById('editMemberId').value;
+      const data = {
+        firstName: document.getElementById('editFirstName').value.trim(),
+        lastName: document.getElementById('editLastName').value.trim(),
+        status: document.getElementById('editStatus').value,
+        sundaySchool: document.getElementById('editSundaySchool').value,
+        joinDate: document.getElementById('editJoinDate').value,
+        movedDate: document.getElementById('editMovedDate').value,
+        deceasedDate: document.getElementById('editDeceasedDate').value,
+        phone: document.getElementById('editPhone').value.trim(),
+        email: document.getElementById('editEmail').value.trim(),
+        address: document.getElementById('editAddress').value.trim(),
+        household: document.getElementById('editHousehold').value.trim() || `${document.getElementById('editLastName').value.trim()} Family`,
+        birthday: document.getElementById('editBirthday').value.trim(),
+        ministries: document.getElementById('editMinistries').value.trim(),
+        notes: document.getElementById('editNotes').value.trim()
+      };
+
+      if (id) {
+        const idx = members.findIndex(m => m.id === id);
+        if (idx !== -1) {
+          members[idx] = { ...members[idx], ...data };
+          showToast(`Updated record for ${data.firstName} ${data.lastName}`);
+        }
+      } else {
+        const newMember = { id: 'cm-' + Date.now(), ...data };
+        members.push(newMember);
+        showToast(`Added ${data.firstName} ${data.lastName} to church roll!`);
+      }
+
+      saveMembersToStorage();
+      closeMemberModal();
+      applyFilters();
+      renderDashboard();
+    }
+
+    function handleDeleteCurrentMember() {
+      const id = document.getElementById('editMemberId').value;
+      if (!id) return;
+      const member = members.find(m => m.id === id);
+      const name = member ? `${member.firstName} ${member.lastName}` : "member";
+      members = members.filter(m => m.id !== id);
+      saveMembersToStorage();
+      closeMemberModal();
+      applyFilters();
+      renderDashboard();
+      showToast(`Removed record for ${name}.`);
+    }
+
+    function renderHouseholds() {
+      const map = {};
+      members.forEach(m => {
+        const hh = (m.household && m.household.trim()) ? m.household.trim() : `${m.lastName} Family`;
+        if (!map[hh]) map[hh] = [];
+        map[hh].push(m);
+      });
+
+      const keys = Object.keys(map).sort();
+      document.getElementById('householdTotalBadge').innerText = keys.length;
+
+      const grid = document.getElementById('householdsGrid');
+      grid.innerHTML = keys.map(name => {
+        const family = map[name];
+        const primaryAddress = family.find(f => f.address)?.address || "Crow Mountain Area";
+        const primaryPhone = family.find(f => f.phone)?.phone || "No phone listed";
+
+        return `
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                  <i data-lucide="home" class="w-4 h-4"></i>
+                </span>
+                <h4 class="font-bold text-slate-800 text-sm">${escapeHtml(name)}</h4>
+              </div>
+              <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-semibold">${family.length} member(s)</span>
+            </div>
+
+            <div class="text-xs text-slate-500 space-y-1">
+              <div class="flex items-center gap-1.5 truncate">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+                <span>${escapeHtml(primaryAddress)}</span>
+              </div>
+              <div class="flex items-center gap-1.5 truncate">
+                <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+                <span>${escapeHtml(primaryPhone)}</span>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 space-y-1.5">
+              <div class="text-[11px] font-bold uppercase text-slate-400">Members in Unit:</div>
+              <div class="space-y-1">
+                ${family.map(f => `
+                  <div class="flex items-center justify-between text-xs py-0.5">
+                    <span class="font-medium text-slate-700">${escapeHtml(f.firstName)} ${escapeHtml(f.lastName)}</span>
+                    <span class="text-[10px] text-slate-400">${escapeHtml(f.status)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function renderPastoral() {
+      renderPrayerBoard();
+      renderHomeboundList();
+      populateCareMemberSelect();
+      renderCareHistory();
+      lucide.createIcons();
+    }
+
+    function renderPrayerBoard() {
+      const container = document.getElementById('prayerRequestsList');
+      if (prayerRequests.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-6 text-center italic">No active prayer requests currently posted.</p>`;
+        return;
+      }
+
+      container.innerHTML = prayerRequests.map(pr => {
+        const updates = pr.updates || [];
+        return `
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-slate-800 text-sm">${escapeHtml(pr.title)}</h4>
+                  <span class="text-[10px] font-bold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full">${escapeHtml(pr.category)}</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-1">${escapeHtml(pr.text)}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-slate-400">${escapeHtml(pr.date)}</span>
+                <button onclick="deletePrayerRequest('${pr.id}')" title="Delete prayer request" class="text-slate-400 hover:text-rose-600 p-1">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Conversational Thread -->
+            <div class="space-y-2 pt-2 border-t border-slate-200/60">
+              <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <i data-lucide="message-square" class="w-3 h-3 text-slate-400"></i>
+                <span>Updates & Progress Notes (${updates.length})</span>
+              </div>
+
+              ${updates.length > 0 ? `
+                <div class="space-y-2 max-h-48 overflow-y-auto custom-scroll pr-1">
+                  ${updates.map((u, idx) => `
+                    <div class="p-2 bg-white rounded-lg border border-slate-100 flex items-start justify-between gap-2 text-xs">
+                      <div>
+                        <div class="flex items-center gap-1.5">
+                          <span class="font-bold text-slate-800 text-[11px]">${escapeHtml(u.author || 'Prayer Team')}</span>
+                          <span class="text-[9px] bg-slate-100 text-slate-600 px-1 rounded">${escapeHtml(u.role || 'Member')}</span>
+                          <span class="text-[9px] text-slate-400">${escapeHtml(u.date)}</span>
+                        </div>
+                        <p class="text-slate-600 mt-0.5 text-xs">${escapeHtml(u.text)}</p>
+                      </div>
+                      <button onclick="deletePrayerComment('${pr.id}', ${idx})" class="text-slate-300 hover:text-rose-500 p-0.5">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : `<p class="text-[11px] text-slate-400 italic">No updates logged yet.</p>`}
+
+              <!-- Inline Quick Reply Form -->
+              <form onsubmit="handlePostPrayerUpdate(event, '${pr.id}')" class="flex gap-2 pt-1.5">
+                <input type="text" id="prayerUpdateText_${pr.id}" placeholder="Post update or progress note..." required class="flex-1 p-2 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-emerald-500">
+                <button type="submit" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold whitespace-nowrap transition-colors">
+                  Post
+                </button>
+              </form>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handlePostPrayerUpdate(e, prayerId) {
+      e.preventDefault();
+      const input = document.getElementById(`prayerUpdateText_${prayerId}`);
+      if (!input || !input.value.trim()) return;
+
+      const prayer = prayerRequests.find(p => p.id === prayerId);
+      if (!prayer) return;
+
+      if (!prayer.updates) prayer.updates = [];
+      const now = new Date();
+      const timeStr = `${now.toISOString().split('T')[0]} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+      prayer.updates.push({
+        author: "Pastoral Team",
+        role: "Church Office",
+        date: timeStr,
+        text: input.value.trim()
+      });
+
+      input.value = "";
+      savePrayersToStorage();
+      renderPrayerBoard();
+      lucide.createIcons();
+      showToast("Prayer update added to conversation!");
+    }
+
+    function deletePrayerComment(prayerId, commentIdx) {
+      const prayer = prayerRequests.find(p => p.id === prayerId);
+      if (!prayer || !prayer.updates) return;
+      prayer.updates.splice(commentIdx, 1);
+      savePrayersToStorage();
+      renderPrayerBoard();
+      lucide.createIcons();
+      showToast("Comment removed.");
+    }
+
+    function deletePrayerRequest(prayerId) {
+      prayerRequests = prayerRequests.filter(p => p.id !== prayerId);
+      savePrayersToStorage();
+      renderPrayerBoard();
+      renderDashboard();
+      lucide.createIcons();
+      showToast("Prayer request removed.");
+    }
+
+    function openAddPrayerModal() {
+      document.getElementById('newPrayerTitle').value = "";
+      document.getElementById('newPrayerText').value = "";
+      document.getElementById('prayerModal').classList.remove('hidden');
+    }
+
+    function closeAddPrayerModal() {
+      document.getElementById('prayerModal').classList.add('hidden');
+    }
+
+    function handleSaveNewPrayer(e) {
+      e.preventDefault();
+      const title = document.getElementById('newPrayerTitle').value.trim();
+      const category = document.getElementById('newPrayerCategory').value;
+      const text = document.getElementById('newPrayerText').value.trim();
+
+      const newPr = {
+        id: 'pr-' + Date.now(),
+        title,
+        category,
+        date: new Date().toISOString().split('T')[0],
+        text,
+        updates: []
+      };
+
+      prayerRequests.unshift(newPr);
+      savePrayersToStorage();
+      closeAddPrayerModal();
+      renderPrayerBoard();
+      renderDashboard();
+      showToast("New prayer request published!");
+    }
+
+    function renderHomeboundList() {
+      const container = document.getElementById('homeboundList');
+      const homebound = members.filter(m => m.status === 'Homebound');
+
+      if (homebound.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-3 col-span-2 italic">No members currently marked as Homebound.</p>`;
+        return;
+      }
+
+      container.innerHTML = homebound.map(m => `
+        <div class="p-3 bg-amber-50/60 border border-amber-200/80 rounded-xl space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-xs text-amber-950">${escapeHtml(m.firstName)} ${escapeHtml(m.lastName)}</span>
+            <button onclick="removeHomeboundStatus('${m.id}')" title="Return to active roster" class="text-xs text-amber-700 hover:text-amber-900 font-semibold underline">
+              Return to Active
+            </button>
+          </div>
+          <div class="text-[11px] text-slate-600">${escapeHtml(m.address || 'Russellville / Pottsville area')}</div>
+          <p class="text-[11px] text-amber-900 italic pt-1 border-t border-amber-100">${escapeHtml(m.notes || 'Homebound care list.')}</p>
+        </div>
+      `).join('');
+    }
+
+    function removeHomeboundStatus(id) {
+      const m = members.find(x => x.id === id);
+      if (m) {
+        m.status = 'Active';
+        saveMembersToStorage();
+        renderPastoral();
+        renderDashboard();
+        showToast(`${m.firstName} ${m.lastName} updated to Active.`);
+      }
+    }
+
+    function populateCareMemberSelect() {
+      const sel = document.getElementById('careMemberSelect');
+      sel.innerHTML = `<option value="">-- Choose Member --</option>` + members
+        .sort((a,b) => a.lastName.localeCompare(b.lastName))
+        .map(m => `<option value="${escapeHtml(m.firstName)} ${escapeHtml(m.lastName)}">${escapeHtml(m.lastName)}, ${escapeHtml(m.firstName)}</option>`)
+        .join('');
+    }
+
+    function handleSaveCareLog(e) {
+      e.preventDefault();
+      const memberName = document.getElementById('careMemberSelect').value;
+      const type = document.getElementById('careType').value;
+      const staff = document.getElementById('careStaff').value.trim() || "Pastor";
+      const notes = document.getElementById('careNotes').value.trim();
+
+      const newLog = {
+        id: 'cl-' + Date.now(),
+        memberName,
+        type,
+        date: new Date().toISOString().split('T')[0],
+        staff,
+        notes
+      };
+
+      careLogs.unshift(newLog);
+      saveCareLogsToStorage();
+      document.getElementById('careNotes').value = "";
+      renderCareHistory();
+      renderDashboard();
+      showToast("Pastoral care contact recorded!");
+    }
+
+    function renderCareHistory() {
+      const container = document.getElementById('careHistoryList');
+      if (careLogs.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-2 italic">No pastoral logs recorded yet.</p>`;
+        return;
+      }
+      container.innerHTML = careLogs.map(l => `
+        <div class="p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-xs space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-800">${escapeHtml(l.memberName)}</span>
+            <span class="text-[10px] text-slate-400">${escapeHtml(l.date)}</span>
+          </div>
+          <div class="text-slate-600">${escapeHtml(l.notes)}</div>
+          <div class="text-[10px] text-emerald-700 font-semibold">${escapeHtml(l.type)} • By: ${escapeHtml(l.staff)}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderBroadcastCounts() {
+      const activeEmails = members.filter(m => m.status === 'Active' && m.email).map(m => m.email);
+      const prayerPhones = members.filter(m => m.phone).map(m => m.phone);
+      
+      document.getElementById('activeEmailCount').innerText = `${activeEmails.length} emails`;
+      document.getElementById('prayerPhoneCount').innerText = `${prayerPhones.length} phones`;
+    }
+
+    function copyList(type) {
+      let list = [];
+      if (type === 'activeEmail') {
+        list = members.filter(m => m.status === 'Active' && m.email).map(m => m.email);
+      } else if (type === 'prayerPhone') {
+        list = members.filter(m => m.phone).map(m => m.phone);
+      } else if (type === 'ssTeachers') {
+        list = members.filter(m => /teacher/i.test(m.ministries || '') && m.email).map(m => m.email);
+      }
+
+      if (list.length === 0) {
+        showToast("No records found with valid contact info.", "error");
+        return;
+      }
+
+      const text = list.join(', ');
+      const tempTextArea = document.createElement("textarea");
+      tempTextArea.value = text;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextArea);
+      showToast(`Copied ${list.length} contacts to clipboard!`);
+    }
+
+    function openPrintDirectoryModal() {
+      renderPrintModalView();
+      document.getElementById('printModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closePrintDirectoryModal() {
+      document.getElementById('printModal').classList.add('hidden');
+    }
+
+    function renderPrintModalView() {
+      const showAddress = document.getElementById('printOptAddress') ? document.getElementById('printOptAddress').checked : true;
+      const showPhone = document.getElementById('printOptPhone') ? document.getElementById('printOptPhone').checked : true;
+      const showEmail = document.getElementById('printOptEmail') ? document.getElementById('printOptEmail').checked : true;
+
+      const activeMembers = members
+        .filter(m => m.status !== 'Deceased')
+        .sort((a, b) => (a.lastName || '').localeCompare(b.lastName || '') || (a.firstName || '').localeCompare(b.firstName || ''));
+
+      document.getElementById('printMemberCount').innerText = `${activeMembers.length} active records`;
+      document.getElementById('printGeneratedDate').innerText = `Generated: ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+
+      const modalGrid = document.getElementById('printModalDirectoryGrid');
+      const printGrid = document.getElementById('printDirectoryGrid');
+
+      const cardHtml = activeMembers.map(m => `
+        <div class="p-3 border border-slate-200 rounded-lg bg-slate-50/50 space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900 text-sm">${escapeHtml(m.lastName)}, ${escapeHtml(m.firstName)}</span>
+            <span class="text-[10px] font-semibold text-slate-500 uppercase">${escapeHtml(m.status)}</span>
+          </div>
+          ${showAddress && m.address ? `<div class="text-slate-600 text-xs">${escapeHtml(m.address)}</div>` : ''}
+          ${showPhone && m.phone ? `<div class="text-slate-700 font-medium text-xs">${escapeHtml(m.phone)}</div>` : ''}
+          ${showEmail && m.email ? `<div class="text-slate-500 text-[11px] truncate">${escapeHtml(m.email)}</div>` : ''}
+          <div class="text-[10px] text-slate-400 pt-0.5 border-t border-slate-100 flex items-center justify-between">
+            <span>Class: ${escapeHtml(m.sundaySchool || 'General')}</span>
+            ${m.birthday ? `<span>Birthday: ${escapeHtml(m.birthday)}</span>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      modalGrid.innerHTML = cardHtml;
+      if (printGrid) printGrid.innerHTML = cardHtml;
+      lucide.createIcons();
+    }
+
+    function triggerBrowserPrint() {
+      renderPrintModalView();
+      const printArea = document.getElementById('printArea');
+      if (printArea) printArea.classList.remove('hidden');
+
+      try {
+        window.focus();
+        window.print();
+      } catch (err) {
+        showToast("Print blocked. Use 'Copy Directory Text' instead.", "error");
+      } finally {
+        if (printArea) printArea.classList.add('hidden');
+      }
+    }
+
+    function copyDirectoryAsText() {
+      const activeMembers = members
+        .filter(m => m.status !== 'Deceased')
+        .sort((a, b) => (a.lastName || '').localeCompare(b.lastName || '') || (a.firstName || '').localeCompare(b.firstName || ''));
+
+      const text = activeMembers.map(m => {
+        let line = `${m.lastName}, ${m.firstName}`;
+        if (m.phone) line += ` | Phone: ${m.phone}`;
+        if (m.address) line += ` | Address: ${m.address}`;
+        if (m.email) line += ` | Email: ${m.email}`;
+        if (m.sundaySchool) line += ` | Class: ${m.sundaySchool}`;
+        return line;
+      }).join('\n');
+
+      const tempTextArea = document.createElement("textarea");
+      tempTextArea.value = `CROW MOUNTAIN BAPTIST CHURCH - MEMBER DIRECTORY\n${new Date().toLocaleDateString()}\n\n` + text;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextArea);
+      showToast("Directory text copied to clipboard!");
+    }
+
+    function triggerCsvExport() {
+      let csv = "First Name,Last Name,Status,Sunday School,Phone,Email,Address,Household,Birthday,Ministries,Notes,Date Joined,Date Moved,Date Deceased\n";
+      members.forEach(m => {
+        csv += `"${escapeCsv(m.firstName)}","${escapeCsv(m.lastName)}","${escapeCsv(m.status)}","${escapeCsv(m.sundaySchool)}","${escapeCsv(m.phone)}","${escapeCsv(m.email)}","${escapeCsv(m.address)}","${escapeCsv(m.household)}","${escapeCsv(m.birthday)}","${escapeCsv(m.ministries)}","${escapeCsv(m.notes)}","${escapeCsv(m.joinDate)}","${escapeCsv(m.movedDate)}","${escapeCsv(m.deceasedDate)}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Crow_Mountain_Baptist_Church_Members_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast("Member roster exported to CSV!");
+    }
+
+    function escapeCsv(val) {
+      if (!val) return "";
+      return String(val).replace(/"/g, '""');
+    }
+
+    function syncGoogleSheet() {
+      const url = document.getElementById('sheetUrlInput').value.trim();
+      if (!url) {
+        showToast("Please enter a valid published Google Sheets CSV URL", "error");
+        return;
+      }
+      showToast("Fetching live Google Sheet data...");
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error("Could not fetch sheet");
+          return res.text();
+        })
+        .then(csvText => {
+          parseAndLoadCsv(csvText);
+          showToast("Synced successfully with Google Sheets!");
+        })
+        .catch(err => {
+          showToast("Sync error. Ensure sheet is published as CSV.", "error");
+        });
+    }
+
+    function handleCsvFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        parseAndLoadCsv(evt.target.result);
+        showToast(`Loaded ${file.name} successfully!`);
+      };
+      reader.readAsText(file);
+    }
+
+    function parseAndLoadCsv(text) {
+      const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+      if (lines.length < 2) return;
+
+      const header = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+      const parsedMembers = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const row = parseCsvRow(lines[i]);
+        if (!row || row.length === 0) continue;
+
+        const getVal = (colName) => {
+          const idx = header.findIndex(h => h.includes(colName));
+          return idx !== -1 && row[idx] ? row[idx].trim() : "";
+        };
+
+        const firstName = getVal("first") || row[0] || "";
+        const lastName = getVal("last") || row[1] || "";
+        if (!firstName && !lastName) continue;
+
+        parsedMembers.push({
+          id: 'cm-' + Date.now() + '-' + i,
+          firstName: firstName,
+          lastName: lastName,
+          status: getVal("status") || "Active",
+          sundaySchool: getVal("school") || getVal("class") || "Adults",
+          phone: getVal("phone"),
+          email: getVal("email"),
+          address: getVal("address"),
+          household: getVal("household") || `${lastName} Family`,
+          birthday: getVal("birth"),
+          ministries: getVal("ministr"),
+          notes: getVal("note"),
+          joinDate: getVal("joined") || getVal("join"),
+          movedDate: getVal("moved"),
+          deceasedDate: getVal("deceased")
+        });
+      }
+
+      if (parsedMembers.length > 0) {
+        members = parsedMembers;
+        saveMembersToStorage();
+        applyFilters();
+        renderDashboard();
+      }
+    }
+
+    function parseCsvRow(rowStr) {
+      const result = [];
+      let insideQuote = false;
+      let entry = "";
+      for (let i = 0; i < rowStr.length; i++) {
+        const char = rowStr[i];
+        if (char === '"') {
+          if (insideQuote && rowStr[i + 1] === '"') {
+            entry += '"';
+            i++;
+          } else {
+            insideQuote = !insideQuote;
+          }
+        } else if (char === ',' && !insideQuote) {
+          result.push(entry);
+          entry = "";
+        } else {
+          entry += char;
+        }
+      }
+      result.push(entry);
+      return result;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showToast(message, type = "success") {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const bgColor = type === 'error' ? 'bg-rose-600' : 'bg-slate-900';
+      toast.className = `${bgColor} text-white px-4 py-2.5 rounded-xl shadow-xl text-xs font-semibold flex items-center gap-2 transition-all transform translate-y-2 opacity-0 pointer-events-auto`;
+      toast.innerHTML = `
+        <i data-lucide="${type === 'error' ? 'alert-circle' : 'check-circle'}" class="w-4 h-4"></i>
+        <span>${escapeHtml(message)}</span>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 200);
+      }, 3000);
+    }
+
+    // Startup bootstrap
+    window.onload = function() {
+      updateGreeting();
+      lucide.createIcons();
+      updateSyncBadge();
+      renderDashboard();
+      renderFinances();
+      applyFilters();
+    };
+  </script>
+</body>
+</html>
